@@ -1,0 +1,7 @@
+interface:
+  display_name: "Video Cover Generator"
+  short_description: "用多模态和生图 API 生成三版视频封面"
+  default_prompt: "Use $video-cover-generator to create three 3:4 cover options from this video."
+
+policy:
+  allow_implicit_invocation: true

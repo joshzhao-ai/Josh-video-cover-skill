@@ -1,0 +1,144 @@
+{
+  "skill_name": "video-cover-generator",
+  "evals": [
+    {
+      "id": 0,
+      "name": "openclaw-baseline-rerun",
+      "prompt": "用 /Users/bytedance/Downloads/Open Claw为什么爆火？ (1).mp4 跑一版 3:4 短视频封面对比，保持之前 OpenClaw 效果好的高冲击科技封面方向，输出三张封面和 review 页面。",
+      "expected_output": "Creates a timestamped workdir under ~/Desktop/video-covers, extracts frames, analyzes the video, uses the OpenClaw red mechanical claw / AI scheduling baseline, generates info-heavy, visual-heavy, and balanced covers with model-rendered title/subtitle, runs quality checks, and returns the review HTML path plus three cover paths.",
+      "files": [
+        "/Users/bytedance/Downloads/Open Claw为什么爆火？ (1).mp4"
+      ],
+      "assertions": [
+        "Output includes a review.seedream.text.html file path.",
+        "Output includes three cover JPGs named info-heavy.jpg, visual-heavy.jpg, and balanced.jpg.",
+        "quality.seedream.text.json reports passed=true for all three covers.",
+        "Generated prompts use model-rendered 主标题/副标题 wording rather than local overlay.",
+        "OpenClaw prompts contain a concrete red mechanical claw or AI scheduling visual metaphor."
+      ]
+    },
+    {
+      "id": 1,
+      "name": "claude-code-risk-hook",
+      "prompt": "用 /Users/bytedance/Downloads/高强度用了两周 Claude Code，我有 3 个真实感受.mp4 跑一版封面，对比 OpenClaw baseline 的迁移效果。标题你来选，要抓住视频里最有点击感的钩子。",
+      "expected_output": "Analyzes the Claude Code video, chooses a strong risk/result/pain title rather than a bland summary, avoids inventing a presenter face, generates three Seedream covers with no-person symbolic AI/dev-tool visuals, and returns a review page.",
+      "files": [
+        "/Users/bytedance/Downloads/高强度用了两周 Claude Code，我有 3 个真实感受.mp4"
+      ],
+      "assertions": [
+        "Chosen title is a click hook rather than a plain summary like Claude使用实测.",
+        "Prompts avoid generating a fake presenter or new face.",
+        "Prompts preserve the seedream.text model-rendered title/subtitle pattern.",
+        "Output includes review HTML, three cover JPGs, prompts JSON, analysis JSON, titles JSON, and quality JSON.",
+        "Quality check passes for all generated covers."
+      ]
+    },
+    {
+      "id": 2,
+      "name": "missing-api-key-stop-cleanly",
+      "prompt": "我给你一个本地视频让你生成封面，但当前环境没有 VCG_IMAGE_API_KEY。请按流程尽可能往前跑，不能本地叠字或用 Pillow 做最终封面。",
+      "expected_output": "Stops cleanly after analysis/prompt generation or earlier if necessary, explains that Seedream image API configuration is required, and does not create fake final covers with local rendering.",
+      "files": [],
+      "assertions": [
+        "Does not use local/Pillow final cover rendering as a fallback.",
+        "Explains which API key or configuration is missing.",
+        "Preserves any completed intermediate artifacts and reports their paths.",
+        "Does not claim that final covers were generated when the image API was unavailable."
+      ]
+    },
+    {
+      "id": 3,
+      "name": "identity-critical-human-gate",
+      "prompt": "用 /Users/bytedance/Downloads/抖音2026518-001588.mp4 跑一版封面。这个视频大量是博主本人出镜，流程需要避免生成 AI 假人像，并让用户选择上传本人照片、用视频帧，或不使用真人。",
+      "expected_output": "After VLM analysis, writes person_asset_gate.json, detects that the video is identity-sensitive, pauses before prompt/image generation, asks the user to choose uploaded-photo or no-person as the production options, labels video-frame as experimental, and does not generate fictional presenter covers unless a person strategy is provided.",
+      "files": [
+        "/Users/bytedance/Downloads/抖音2026518-001588.mp4"
+      ],
+      "assertions": [
+        "Output includes a person_asset_gate.json file with requires_decision=true.",
+        "The workflow stops before generating covers when no person_mode has been selected.",
+        "The user is offered uploaded-photo and no-person as production choices.",
+        "video-frame is labeled as experimental rather than a default product path.",
+        "Prompts are not generated with invented or generic presenter instructions while person_mode is auto.",
+        "If no-person is selected, prompts explicitly forbid people/faces and use topic symbols instead."
+      ]
+    },
+    {
+      "id": 4,
+      "name": "cross-format-consistency-check",
+      "prompt": "OpenClaw 已经有选中的 3:4 封面和生成出的 4:3 横版封面。请检查横竖版标题、主体、风格和构图是否一致，输出一个可复用的 JSON 质检结果。",
+      "expected_output": "Runs the cross-format consistency checker on selected 3:4 and generated 4:3 covers, writes consistency.cross-format.json, and reports scores for title consistency, subtitle consistency, subject consistency, style consistency, landscape composition, and thumbnail legibility.",
+      "files": [
+        "/Users/bytedance/Desktop/video-covers/Open Claw为什么爆火？ (1)_20260518_201532/covers-seedream-text/balanced.jpg",
+        "/Users/bytedance/Desktop/video-covers/Open Claw为什么爆火？ (1)_20260518_201532/landscape-4x3-v4/landscape.jpg"
+      ],
+      "assertions": [
+        "Output includes consistency.cross-format.json.",
+        "The report includes an overall_score and passed field.",
+        "The report includes title, subtitle, subject, style, landscape composition, and thumbnail legibility scores.",
+        "The report flags critical issues when the 4:3 image changes the main subject, title, or person identity.",
+        "The report gives a concrete recommendation for rerunning or accepting the 4:3 image."
+      ]
+    },
+    {
+      "id": 5,
+      "name": "end-to-end-runner-openclaw",
+      "prompt": "用新的 end-to-end workflow runner 对 /Users/bytedance/Downloads/Open Claw为什么爆火？ (1).mp4 做一次全自动验证，输出 3:4、4:3、review 页面、workflow 报告和横竖版一致性检查。",
+      "expected_output": "Runs scripts/run_cover_workflow.py with --auto, creates a timestamped workdir, generates three 3:4 covers, selects one, generates a 4:3 landscape cover, runs cross-format consistency, and writes workflow_state.json, workflow_report.json, workflow_report.md, review.seedream.text.html, and consistency.cross-format.json.",
+      "files": [
+        "/Users/bytedance/Downloads/Open Claw为什么爆火？ (1).mp4"
+      ],
+      "assertions": [
+        "Output includes workflow_report.md and workflow_state.json.",
+        "workflow_state.json has status=completed.",
+        "Output includes three 3:4 cover JPGs and one 4:3 landscape JPG.",
+        "Output includes consistency.cross-format.json.",
+        "If consistency initially fails, the workflow retries the 4:3 generation once."
+      ]
+    },
+    {
+      "id": 7,
+      "name": "food-documentary-japan-cuisine",
+      "prompt": "用 /Users/bytedance/Desktop/案例/科普/从地狱开局，到高端化身，日料是如何崛起的？【食录】.mp4 跑一版封面。目标是「赛博食录风格」的电影海报式纪录片封面：纯黑暗调底 + 粉笔喷溅风格的多行竖向堆叠主标题 + 左上红色品牌印章「食录」+ 右上红色「完整版」角标 + 下半部分美食特写实拍主体（电影感打光的握寿司/手/料理刷）+ 底部 @赛博食录 账号水印。标题用「日料凭啥这么贵」，副标题「完整版」。",
+      "expected_output": "VLM 把视频识别为 info_expression / 饮食文化科普 / no-person-needed（key_elements 必须包含日料、米其林、餐厅等真实主体词）。build_cover_prompts.py 命中 is_food_documentary_source() 路由（不命中 AI 工具默认 fallback 也不命中学科教育路由）。生成的 prompts.json 必须包含「电影海报式美食纪录片」「粉笔喷溅」「食录」「完整版」「@赛博食录」「美食特写实拍」等关键 token；必须明确禁止 AI 节点 / 代码终端 / K 线 / cyberpunk 霓虹 / 3D 金属字+螺丝铆钉（防止学科教育垂类污染）。最终封面是 1080x1440 JPG，黑底高对比、粉笔字、红色印章 + 完整版、美食实拍主体齐全。reference 输出参考 evals/reference_outputs/food_documentary_japan.jpg。",
+      "files": [
+        "/Users/bytedance/Desktop/案例/科普/从地狱开局，到高端化身，日料是如何崛起的？【食录】.mp4"
+      ],
+      "reference_output": "evals/reference_outputs/food_documentary_japan.jpg",
+      "assertions": [
+        "prompts.seedream.text.json 必须包含「电影海报式美食纪录片」字段（命中 is_food_documentary_source 路由）。",
+        "prompts 必须包含「粉笔喷溅」「印章」「食录」「@赛博食录」「完整版」中至少 4 个。",
+        "prompts 主标题 prompt 必须要求多行竖向堆叠（包含「多行竖向堆叠」「竖向堆叠」「垂直堆叠」中的关键字）。",
+        "prompts 必须明确禁止 AI 工具污染：「代码终端」「AI 节点」「K 线」「cyberpunk」「青色科技」中至少 3 个出现在禁止段。",
+        "prompts 必须明确禁止学科教育污染：「3D 金属」「螺丝铆钉」「工业线框」中至少 2 个出现在禁止段（避免跨垂类视觉残留）。",
+        "title_strategy 应该用反差/质疑/起源类 hook（如「凭啥这么贵」「崛起史」「秘密」），不应该是 risk/reversal/result/pain（AI 工具 hook）。",
+        "person_asset_gate 判定 no-person-needed（饮食纪录片以食物为主体，不需真人）。",
+        "三张封面尺寸 1080x1440，黑底高对比；至少一张里出现真实美食实拍特写（握寿司 / 手 / 料理工具），且没有 AI 节点 / K 线 / 代码窗口元素。",
+        "封面文字包含「日料」「凭啥」「这么贵」「食录」「完整版」（VLM/OCR 抽样验证）。",
+        "封面字体气质必须是粉笔喷溅/撕裂残破/旧报纸感，不能是 3D 立体金属厚切字（这是学科教育的字体气质）。"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "academic-engineering-minimalist-poster",
+      "prompt": "用 /Users/bytedance/Desktop/案例/科技/这样的《结构力学》你喜欢吗？桁架内力篇.mp4 跑一版封面。目标是奥达升 AWE 风格的极简主义工程科普海报：深蓝纯色底 + 白色立体厚切主标题（带螺丝铆钉细节）+ 4 层文字结构（kicker 这样的 + mega title 结构力学 + 白色斜放疑问标签 你喜欢吗？+ 橙色矩形系列标签 桁架内力篇）+ 下半部分扁平 2D 工业线框桁架（3 个垂直堆叠 + 红蓝节制箭头 + 虚线锚定三角支座）。标题用「结构力学」，副标题「桁架内力篇」。",
+      "expected_output": "VLM 把视频识别为 info_expression / no-person-needed 学科教育类（key_elements 必须包含桁架结构 / 弦杆内力等真实主体）。build_cover_prompts.py 命中 is_academic_engineering_source() 路由（不是默认 high-impact tech cover）。生成的 prompts.json 必须包含「极简主义工程科普海报」「扁平 2D 工业线框」「螺丝铆钉」「锚定三角支座」「4 层文字结构」「kicker 这样的」「你喜欢吗？」「橙色矩形」「红蓝指示箭头」等关键 token；必须明确禁止 AI 节点 / 代码终端 / K 线 / cyberpunk 霓虹。最终封面是 1080x1440 JPG，主标题清晰可读，4 段文字位置正确。reference 输出参考 evals/reference_outputs/academic_engineering_b4_raw.jpg。",
+      "files": [
+        "/Users/bytedance/Desktop/案例/科技/这样的《结构力学》你喜欢吗？桁架内力篇.mp4"
+      ],
+      "reference_output": "evals/reference_outputs/academic_engineering_b4_raw.jpg",
+      "assertions": [
+        "prompts.seedream.text.json 必须包含「极简主义工程科普海报」字段（命中学科教育路由）。",
+        "prompts 必须包含「扁平 2D」「工业线框」「螺丝铆钉」「锚定三角支座」中至少 3 个。",
+        "prompts 必须包含「kicker」+「这样的」+「你喜欢吗？」+「桁架内力篇」（4 层文字结构齐全）。",
+        "prompts 不能包含「AI 节点」「纳斯达克」「K 线」「代码终端」「cyberpunk」「四层背景」等错误垂类元素。",
+        "title_strategy 不应该把 hook 类型选成 risk/reversal/result/pain（这些是 AI 工具 hook）；学科教育应优先 question / resonance / cognitive-gap / subject-fun。",
+        "生成的封面包含三张差异化变体（info-heavy / visual-heavy / balanced），尺寸 1080x1440。",
+        "封面里出现 4 段文字「这样的」「结构力学」「你喜欢吗？」「桁架内力篇」（VLM 抽样验证 OCR）。",
+        "如果「桁」字被错写成「析」「梁」等形近字，可以用 scripts/fix_rare_char.py 后处理修复——但 PIL 修字仅在原图确实有错字时使用，不要盲修。",
+        "skill 不应该在该 case 走 AI 工具默认模板：covers 视觉里不应出现 K 线、AI 节点网络、代码窗口、cyberpunk 发光等元素。",
+        "桁架结构是扁平 2D 工业线框（非 3D 立体渲染），两端有虚线锚定三角支座，红蓝箭头节制（每个结构 4-8 个）。"
+      ]
+    }
+  ]
+}
