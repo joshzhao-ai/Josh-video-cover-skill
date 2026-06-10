@@ -4,13 +4,14 @@
 
 <h1 align="center">🎬 Josh Video Cover Skill</h1>
 
-<p align="center"><b>丢一条视频进来，AI 智能体还你 3 张海报级封面。</b></p>
+<p align="center"><b>真正的端到端：上传一条视频，得到有点击欲、画面美感在线的封面。</b><br>
+<sub>看片 · 定题 · 选风格 · 出图 · 质检 —— 中间全部由 AI 智能体完成，你只做两个决定：要不要露脸、用哪个标题。</sub></p>
 
 <p align="center">
+  <img src="https://img.shields.io/badge/End--to--End-视频进%20→%20封面出-e8453a" alt="e2e">
   <img src="https://img.shields.io/badge/Platform-Claude%20Code%20%7C%20Codex-blueviolet" alt="platform">
   <img src="https://img.shields.io/badge/Engine-即梦%20Dreamina%205.0-ff6b4a" alt="engine">
   <img src="https://img.shields.io/badge/Verified-8%20条真实视频人工验收-2da44e" alt="verified">
-  <img src="https://img.shields.io/badge/Version-v1.1-1846c4" alt="version">
 </p>
 
 > 本页所有配图（包括顶部横幅）均由本 skill 自己生成 —— 这就是 demo。
@@ -19,21 +20,23 @@
 
 ## ✨ 作品墙
 
-每张都来自真实视频的端到端产出，经人工逐张验收。
+以下每张都是「丢进一条真实视频 → 端到端自动产出」并经人工验收的优质案例。
 
-| 真人口播 · AI 工具实测 | 真人口播 · Codex 解读 | 复古印刷 · 真人套印 | 取帧成人像 · 相机测评 |
+| AI 工具实测 · 真人重绘 | Codex 解读 · 真人重绘 | Codex · 动感跃起 | 相机测评 · 取帧成人像 |
 |:---:|:---:|:---:|:---:|
-| <img src="assets/g_cc_showcase.jpg" width="220"> | <img src="assets/g_codex_graff.jpg" width="220"> | <img src="assets/g_codex_retro.jpg" width="220"> | <img src="assets/g_camera_person.jpg" width="220"> |
+| <img src="assets/g_cc_showcase.jpg" width="220"> | <img src="assets/g_codex_graff.jpg" width="220"> | <img src="assets/g_codex_jump.jpg" width="220"> | <img src="assets/g_camera_person.jpg" width="220"> |
 
-| 美食纪录片 · 毛笔字 | 美食纪录片 · 纯黑高级 | 设计教程 · 以身作则 | 医学科普 · 缝线字 |
+| 相机测评 · 跃起 | 美食纪录片 · 毛笔字 | 设计教程 · 封面即示范 | 医学科普 · 手术室插画 |
 |:---:|:---:|:---:|:---:|
-| <img src="assets/g_food_b.jpg" width="220"> | <img src="assets/g_food_a.jpg" width="220"> | <img src="assets/g_design_a.jpg" width="220"> | <img src="assets/g_med_c.jpg" width="220"> |
+| <img src="assets/g_camera_jump.jpg" width="220"> | <img src="assets/g_food_b.jpg" width="220"> | <img src="assets/g_design_a.jpg" width="220"> | <img src="assets/g_med_b.jpg" width="220"> |
 
-**4:3 横版**同一视觉系统直生（非竖版裁切/改造）：
+### 同一案例 · 双比例直出
 
-| | |
+竖版 3:4 与横版 4:3 都是按同一配方直接生成 —— 同一视觉系统，不是裁切改造。
+
+| 3:4 竖版 | 4:3 横版 |
 |:---:|:---:|
-| <img src="assets/g43_codex.jpg" width="380"> | <img src="assets/g43_food.jpg" width="380"> |
+| <img src="assets/g_codex_retro.jpg" width="280"> | <img src="assets/g43_codex.jpg" width="380"> |
 
 ---
 
@@ -52,7 +55,7 @@ flowchart LR
     H --> I[✅ 交付最佳 3 张<br>可选 4:3 横版]
 ```
 
-**核心理念：配方直生，而非垫图模仿。** 案例库只用来校准"该走哪套配方"，每张图都是按题材配方+排版铁律全新生成 —— 实测比垫参考图（易泄漏、易串味）质量高一个档位。
+**核心理念：配方直生，而非垫图模仿。** 案例库只用来校准"该走哪套配方"，每张图都按题材配方+排版铁律全新生成 —— 实测比垫参考图（易泄漏、易串味）质量高一个档位。
 
 ## 🎯 七套题材配方
 
@@ -73,7 +76,7 @@ flowchart LR
 ### Claude Code（开箱即用）
 
 ```bash
-git clone https://github.com/ciaozz2504764976-glitch/Josh-video-cover-skill.git \
+git clone https://github.com/joshzhao-ai/Josh-video-cover-skill.git \
   ~/.claude/skills/video-cover-generator-eval-20260525
 ```
 
