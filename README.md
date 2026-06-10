@@ -22,21 +22,23 @@
 
 以下每张都是「丢进一条真实视频 → 端到端自动产出」并经人工验收的优质案例。
 
-| AI 工具实测 · 真人重绘 | Codex 解读 · 真人重绘 | Codex · 动感跃起 | 相机测评 · 取帧成人像 |
+| AI 工具实测 · Claude 橙 | Codex · OpenAI 青 | Codex · 复古套印 | 相机测评 · 取帧成人像 |
 |:---:|:---:|:---:|:---:|
-| <img src="assets/g_cc_showcase.jpg" width="220"> | <img src="assets/g_codex_graff.jpg" width="220"> | <img src="assets/g_codex_jump.jpg" width="220"> | <img src="assets/g_camera_person.jpg" width="220"> |
+| <img src="assets/g_cc_showcase.jpg" width="220"> | <img src="assets/g_codex_jump.jpg" width="220"> | <img src="assets/g_codex_retro.jpg" width="220"> | <img src="assets/g_camera_person.jpg" width="220"> |
 
-| 相机测评 · 跃起 | 美食纪录片 · 毛笔字 | 设计教程 · 封面即示范 | 医学科普 · 手术室插画 |
+| 相机测评 · 暖调跃起 | 美食纪录片 · 毛笔字 | 设计教程 · 封面即示范 | 医学科普 · 手术室插画 |
 |:---:|:---:|:---:|:---:|
 | <img src="assets/g_camera_jump.jpg" width="220"> | <img src="assets/g_food_b.jpg" width="220"> | <img src="assets/g_design_a.jpg" width="220"> | <img src="assets/g_med_b.jpg" width="220"> |
 
+> 留意前三张：同一位创作者，讲 Claude 的封面是珊瑚橙、讲 Codex 的封面是 OpenAI 青 —— **配色跟品牌走**是写进配方的规则，不是巧合。
+
 ### 同一案例 · 双比例直出
 
-竖版 3:4 与横版 4:3 都是按同一配方直接生成 —— 同一视觉系统，不是裁切改造。
+竖版 3:4 与横版 4:3 都按同一配方直接生成 —— 同一视觉系统，不是裁切改造。
 
 | 3:4 竖版 | 4:3 横版 |
 |:---:|:---:|
-| <img src="assets/g_codex_retro.jpg" width="280"> | <img src="assets/g43_codex.jpg" width="380"> |
+| <img src="assets/g_pair_34.jpg" width="280"> | <img src="assets/g_pair_43.jpg" width="380"> |
 
 ---
 
