@@ -23,7 +23,7 @@
 ### Claude Code（开箱即用）
 
 ```bash
-git clone git@github.com:ciaozz2504764976-glitch/video-cover-skill.git \
+git clone https://github.com/ciaozz2504764976-glitch/Josh-video-cover-skill.git \
   ~/.claude/skills/video-cover-generator-eval-20260525
 ```
 
