@@ -36,9 +36,10 @@
 
 竖版 3:4 与横版 4:3 都按同一配方直接生成 —— 同一视觉系统，不是裁切改造。
 
-| 3:4 竖版 | 4:3 横版 |
-|:---:|:---:|
-| <img src="assets/g_pair_34.jpg" width="280"> | <img src="assets/g_pair_43.jpg" width="380"> |
+| | 3:4 竖版 | 4:3 横版 |
+|:---:|:---:|:---:|
+| **设计教程** | <img src="assets/pair_c_34.jpg" width="240"> | <img src="assets/pair_c_43.jpg" width="340"> |
+| **相机测评** | <img src="assets/pair_e_34.jpg" width="240"> | <img src="assets/pair_e_43.jpg" width="340"> |
 
 ---
 
