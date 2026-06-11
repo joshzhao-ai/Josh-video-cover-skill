@@ -75,7 +75,7 @@ TRIM_RULE = ("画面文字严格≤10字主文案：超大主标题「{title}」
              "①字号极大：主标题横向占画面宽度约75-90%，一眼可读，绝不能小或纤细；"
              "②留安全边距：标题距画面上/左/右边缘留出明显空隙，绝对不要顶到或被裁切到画面边缘；"
              "③字体要有强设计感、手段多样：优先用 艺术字/书法/复古印刷字/立体描边+材质/关键词局部异色/与画面元素穿插融合 等丰富处理，做出高级排版感(参考：毛笔大字、复古丝网印刷标题、描边异色艺术字)；"
-             "切忌千篇一律地'整条纯色块+平铺文字'(会显单调、设计感弱)；色块只作局部点缀或关键词高亮，不要铺满整行标题；"
+             "③b 标题背板增强对比(深底封面尤其需要)：可用撞色实色块/斜切色带作为超大标题的背板来强化对比与冲击(如电光青蓝实色块衬白色立体描边大字、双色块错位分行)，但色块须有设计感(斜切/撕边/双色错位/与画面元素穿插)、字体本身仍要立体描边或异色；切忌毫无处理的'整条纯色块+平铺细字'(单调、设计感弱)；"
              "④清晰：靠字体本身的粗壮、描边、与背景的明暗对比来保证可读，避开高光辉光与复杂纹理。")
 
 def pick_action(video):
@@ -111,17 +111,34 @@ def pick_palette(video):
         if any(k in kw for k in keys): return pal
     return "深蓝+珊瑚橙"
 
+def pick_bg(video):
+    """背景明度跟主题走（用户教训：浅灰/白底+青蓝点缀对比弱、主体浮不出来→不够炸）。
+    科技/AI/品牌类用深底高对比更抓眼；复古相机/美食/摄影仍保留其暖亮底，避免误伤。"""
+    kw = (" ".join(video.get("key_elements", [])) + video.get("content_summary", "")
+          + " ".join(video.get("topic", [])) + video.get("name", "")).lower()
+    warm_keys = ["相机", "胶片", "复古", "摄影", "出片", "美食", "日料", "餐", "厨", "旅行", "生活"]
+    if any(k in kw for k in warm_keys):
+        return "明亮/暖色背景打底，干净通透"
+    dark_keys = ["codex", "openai", "gpt", "chatgpt", "sora", "claude", "anthropic", "ai",
+                 "编程", "代码", "终端", "科技", "数码", "芯片", "效率", "软件"]
+    if any(k in kw for k in dark_keys):
+        return "深藏青/近黑深色背景打底、整体高对比，主体与标题在深底上强烈跳出(避免浅灰白底)"
+    return "中性深色背景打底、适度高对比"
+
 def style_repaint_prompts(video, title, hook):
     theme = video.get("content_summary", "")
     action = pick_action(video); motif = pick_motif(video); palette = pick_palette(video)
+    bg = pick_bg(video)
     common = (f"大师级排版，极繁主义，半调图案，杂色，丝网印刷质感，点线面层次分布。核心主题：{theme}。"
-              f"整组配色跟随品牌/主题气质：{palette}；不要使用与该品牌/主题无关的配色。")
-    person = "视觉风格：一个人物（直接用第一张照片里的人，长相五官发型保留、风格不要变），"
+              f"整组配色跟随品牌/主题气质：{palette}；不要使用与该品牌/主题无关的配色。"
+              f"背景：{bg}。超大主标题压在撞色实色块/斜切色带背板上做强对比，标题文字白色立体描边、醒目跳出。")
+    person = ("视觉风格：一个人物——直接用第一张照片里的人，写实重绘、五官长相发型精确保留本人神态(高神似度)；"
+              "人物本身保持写实、不要卡通化，只对背景与排版做海报化/极繁处理，主体边缘描亮边从深底干净跳出，")
     trim = TRIM_RULE.format(title=title, hook=hook)
     return [
-        ("repaint_graff", common + person + f"美式卡通涂鸦海报风，{action}，周围环绕飞出的{motif}涂鸦。背景色彩（{palette}）。" + trim),
-        ("repaint_retro", common + person + f"复古印刷海报风（粗颗粒+套色错位），抱臂站立自信看镜头、半身占画面约一半、人物突出，身后巨大发光主题元素剪影与放射状点线面。背景（米白底+{palette}套印）。" + trim),
-        ("repaint_jump", common + person + f"美式卡通涂鸦海报风，单手高举主题道具腾空跃起、姿态动感张扬，身边环绕{motif}与速度线涂鸦。背景色彩（{palette}的浅色调变体，与前两款拉开色差）。" + trim),
+        ("repaint_graff", common + person + f"半写实海报风，{action}，周围环绕飞出的{motif}与少量涂鸦点缀。" + trim),
+        ("repaint_retro", common + person + f"半写实复古印刷海报风（粗颗粒+套色错位），抱臂站立自信看镜头、半身占画面约一半、人物突出，身后巨大发光主题元素剪影与放射状点线面。" + trim),
+        ("repaint_jump", common + person + f"半写实动感海报风，单手高举主题道具腾空跃起、姿态张扬，身边环绕{motif}与速度线，点线面分布与前两款拉开差异。" + trim),
     ]
 
 def symbolic_prompts(video, title, hook):
