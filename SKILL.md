@@ -1,127 +1,220 @@
 ---
 name: video-cover-generator-eval-20260525
-description: "为抖音/快手/小红书/视频号短视频生成封面的首选 skill（旧版 ai-cover-generator 的升级版）。输入一段本地视频，自动完成视频分析、3 个标题候选、3 张差异化 3:4 竖版封面（信息优先/画面优先/稳妥平衡）、用户选择最佳后再生成对应 4:3 横版，并做跨格式一致性检查与真人资产 gating。当用户提到\"封面\"\"封面图\"\"做个封面\"\"视频封面\"\"抖音封面\"\"短视频封面\"\"视频做图\"\"给视频配图\"\"生成封面\"，或上传视频文件并提到出图、配图、展示图时，必须使用这个 skill。"
+description: "为抖音、快手、小红书和视频号短视频生成高点击封面。输入本地视频时，按强制流程完成视频分析、真人人像选择、标题候选确认、三张差异化 3:4 封面、选中竖版的原生 4:3 横版和缩略图质检。用户提到封面、封面图、视频封面、抖音封面、短视频封面、给视频配图、做个封面或生成封面时必须使用。"
 ---
 
-# Video Cover Generator（2026-06-10 定版：配方直生 · 人像门 · 超采样筛选）
+# Video Cover Generator v2.0
 
-输入一条本地视频 → 产出 3 张达标的 3:4 竖版封面。本工作流由 8 条真实视频逐条打磨定版（Claude Code / Codex / 天玑 / 麻醉 / 封面设计 / iPhone拆机 / 日料 / 复古相机），用户已验收。
+目标不是“按提示词出三张图”，而是交付一张在信息流缩略图里仍然有美感、表达清晰、值得点击的封面。
 
-**生图引擎：即梦 dreamina CLI**（`~/.local/bin/dreamina`，先用 `dreamina user_credit` 确认已登录）。不可用时才退到文末 Legacy（Seedream API）。
+## 设计原则
 
-## 核心铁律（违反任何一条 = 打回）
+- **一个内容决策，两套模型适配器。** 两个引擎共享用户确认的文案、人物选择、英雄物和风格方向，但各自使用已经验证的提示词结构；禁止把 Image 2 的长契约直接翻译给 Dreamina。
+- **用户决策先于生图。** 真人视频必须先选人像策略；除非用户明确说“全自动”，必须先给标题候选并等用户确认。没有确认标题，不得生成最终封面。
+- **横版是同一 campaign 的原生续作。** Image 2 和 Dreamina 默认都读取选中的 3:4 成片作为 `selected_vertical_reference`，继承文案、人物、英雄物、配色、字体材质和传播关系，但允许为横版重新设计机位、断行、景别与前后景。Dreamina 同时保留自己的短中文视觉配方；两者都生成原生 4:3，不裁切、拉伸或拼贴。
+- **封面只传达一件事。** 一级钩子、一个大结果/证明物、一个真人或辅助证据就够了。UI、代码、网格和粒子只能做低对比氛围。
+- **强结果可追溯。** 数字、收入、涨粉、权威、排名或“靠 X 达到 Y”只能来自视频、字幕、标题、用户补充或 `verified_proof`。
 
-1. **配方直生，绝不垫案例库封面图**。无人路线一律 text2image 纯提示词；案例库（`references/library_tags.json`）只用于匹配校准"该走哪个配方"。历史教训：垫参考封面只有 60-70 分且内容泄漏/跨主题串味；配方直生实测 9.5。
-2. **真人只来自两处**：用户上传的照片 或 视频帧。**绝不编造可辨识的假人脸**；无人路线 prompt 必须写"不要任何人物、不要人脸"。
-3. **画面文字 ≤10 字主文案**（主标题+钩子），加一行小号英文装饰；不要副标题/要点列表/水印署名。
-4. **字体要有设计感且多样**：艺术字/书法/复古印刷/立体描边/关键词局部异色/与画面穿插。**禁止千篇一律"整条纯色块+平铺字"**（用户点名批评过）；色块只作局部点缀。
-5. **评分诚实**：按 美感/构图/冲击力 打分，"文字清晰"只是底线不是亮点。平庸的图（如黄底白字居中产品图）就是不及格，不许自评 9 分。
-6. **配色跟品牌/主题走，不写死**：pipeline 的 `pick_palette` 按品牌取色（OpenAI/Codex→黑白+科技青蓝；Claude→深蓝+珊瑚橙；复古相机→暖棕橙红…）。成片色调与品牌错配（如 OpenAI 产品配 Claude 橙）= 验收不过；同组三个变体的色调也要拉开差异，避免每次出图都一个色。
+## 引擎策略
 
-## 工作流
+| 用途 | 引擎 | 规则 |
+| --- | --- | --- |
+| 默认主推 | Codex `image_gen` / GPT Image 2 | 使用风格参考、人物身份参考和严格的画面契约，先争取视觉上限。 |
+| 稳定备选 | Dreamina / Seedream | 默认 `5.0 + 2K + recipe-direct`；共享内容决策，但使用 Dreamina 题材短配方。只在用户要求或双引擎对照时使用。 |
+| 历史保底 | `scripts/cover_pipeline.py --engine dreamina` | 保留旧链路与旧 Seedream 配方，不把 Image 2 的提示词反灌进去。 |
 
-### Step 1 · 建工作目录 + 抽帧
+不要猜 Seedream 版本。先运行：
+
+```bash
+python3 scripts/detect_dreamina_capabilities.py --requested auto
+```
+
+当前 CLI 没有报告 Pro 字样时，不能把泛 `5.0` 标为 `5.0 Pro`。CLI 更新并报告 Pro 模型后，适配器会自动选择它。
+
+## 必走流程
+
+### 1. 建目录、抽帧、分析
 
 ```bash
 WORKDIR="$HOME/Desktop/video-covers/<video-stem>_$(date '+%Y%m%d_%H%M%S')"
-mkdir -p "$WORKDIR"
-python3 scripts/extract_frames.py --video '<video.mp4>' --output-dir "$WORKDIR/frames" --count 12
+mkdir -p "$WORKDIR/frames"
+python3 scripts/extract_frames.py --video '<video.mp4>' --output-dir "$WORKDIR/frames" --count 16
+python3 scripts/cover_workflow_state.py init --job "$WORKDIR/cover_job.json" --video '<video.mp4>'
 ```
 
-### Step 2 · 智能体亲自看帧，手写 analysis.json（不要跳过、不要只靠脚本）
-
-打开查看 5-6 张帧图（间隔取，多模态读图），判断后写 `$WORKDIR/analysis.json`：
+亲自查看分散的 6-10 张帧。额外找结果展示、关键操作和清晰正脸帧。写 `$WORKDIR/analysis.json`，至少包含：
 
 ```json
 {
-  "name": "<视频名>",
-  "vertical": "科技|科普|美食|财经|人文社科|生活记录",
-  "video_type": "info_expression|object_operation|lifestyle_scene",
-  "subject_strategy": "real_person_talking_head|product|hands_object|food_documentary|lifestyle_mood|no_person_symbolic|interface|scene|illustration",
-  "no_person_fallback": "mood|product|food|hands|symbolic",
-  "key_elements": ["3-5个具体可画的元素"],
-  "content_summary": "一句话讲清视频内容",
-  "hook_summary": "钩子点(揭秘/盘点/质疑/亲历…)",
-  "topic": ["话题标签2-5个"],
+  "content_summary": "一句话内容",
+  "hook_summary": "为什么值得点开",
+  "verified_proof": ["已经确认的数字、结果或事实"],
+  "cover_promise": "封面承诺",
+  "proof_chain": ["输入/问题", "方法", "结果"],
+  "visual_proof_objects": ["一个英雄物", "一个辅助证据物"],
+  "hero_object": "封面里唯一放大的准确主物",
+  "evidence_object": "可选的一个辅助证据物",
+  "pose_reference_frame": "完整上半身、姿态清楚的原视频帧路径",
+  "content_reference_frames": ["最能证明结果的 1 张原视频帧路径"],
+  "selected_style_profile": "可选风格族 id",
   "has_real_person": true,
-  "has_uploaded_portrait": false,
   "portrait_frame_quality": "good|poor"
 }
 ```
 
-判定要点（实测教训）：
-- **subject_strategy 看封面该画什么，不是看视频里有什么**。口播但封面主角是产品/实物 → `product`/`hands_object`；拆解维修 → `hands_object`；美食纪录片 → `food_documentary`；相机/旅行/出片美学 → `lifestyle_mood`；人就是主角的口播 → `real_person_talking_head`。
-- `has_real_person`：只要有人出镜就 true（含画中画小窗）；古装剧情还原 B-roll 不算创作者出镜。
-- `no_person_fallback`：口播视频若用户选"不放人像"该走哪个无人配方（相机测评→mood，工具讲解→symbolic…）。
-- `portrait_frame_quality`：帧里的人像可否用于取帧重绘。**人占画面大、正脸清晰 → good；人只是画中画小窗/占比小/糊 → poor**（如"大画面是录屏、左下角小圆窗是人"的口播就是 poor）。
+风格族只在题材和证据结构匹配时使用。相机、手机摄影或便携拍摄设备的真人实测，且视频里确实有器材与真实样片时，优先使用 `camera_review_editorial`；纯作品展示、软件教程或无样片内容不要套用。
 
-### Step 3 · 人像门（真人口播必走，向用户提问 3 选 1）
+产品、模型、AI 工具或品牌解读类视频，如果用户选择真人、有准确官方品牌物，而且标题能压缩成一个短判断/问题/收益，可选择 `creator_product_interaction`。此时 `hero_object` 必须明确写成当前官方 Logo、应用图标或产品，不能写成榜单、UI 或泛泛的“结果”；同时准备官方资产，并通过 `--content-reference '<official-asset>'` 传入。缺少这两项时 Image 2 构建器会直接拒绝生成，避免模型猜 Logo。Dreamina 需要准确品牌物时改用 `grounded`：3:4 传人像和当前官方资产；生成 4:3 时再加入用户选中的本视频 3:4 成片作为系列续作参考。不得传 GPT 成片、外部风格封面或从其他创作者封面抠出的 Logo，也不要把这套 Kimi 案例的蓝色和 Logo 复制到其他主题。
 
-`subject_strategy=real_person_talking_head` 且 `has_real_person=true` 时，**必须停下问用户**：
+Image 2 会使用同比例风格参考；Dreamina `recipe-direct` 仍走自己的短配方，不传该参考图，现有 Seedream 规则不受影响。
 
-1. **上传人像**（推荐·效果最佳）→ 用户给照片 → `--person-mode uploaded-photo --portrait <照片>`
-2. **取视频帧**（次优·免上传）→ 从 frames/ 挑一张清晰正脸帧 → `--person-mode frame-cutout --portrait <帧>`。提醒用户：人物按海报风格重绘，神似但非精确。**仅当 `portrait_frame_quality=good` 才提供此选项**；人像只是画中画小窗/占比小/低清时取帧必差 → 隐藏此选项，直接引导上传照片。
-3. **不放人像** → `--person-mode no-person`（走 `no_person_fallback` 无人配方）
-
-产品/实物操作/美食/氛围类**不问**（封面不以口播者为主角），直接 `--person-mode auto`。
-
-### Step 4 · 标题（用户确认后再生图）
-
-给 2-3 个候选：主标题（品牌/主体，≤6字）+ 钩子（≤6字），合计≤10字。钩子优先：质疑（凭啥这么贵）、揭秘（官方这么用/我经历了啥）、盘点（3个真相）、亲历。用户明确说全自动时才自选。
-
-### Step 5 · 出图（配方直生 + 超采样）
+再记录分析：
 
 ```bash
-python3 scripts/cover_pipeline.py \
-  --analysis "$WORKDIR/analysis.json" \
-  --title '<主标题>' --hook '<钩子>' \
-  --person-mode <auto|uploaded-photo|frame-cutout|no-person> \
-  [--portrait <人像图>] \
-  --samples 2 \
-  --out "$WORKDIR/covers"
+python3 scripts/cover_workflow_state.py record-analysis \
+  --job "$WORKDIR/cover_job.json" --analysis "$WORKDIR/analysis.json"
 ```
 
-先 `--dry-run` 看路由决策（选了哪个配方、提示词长啥样），对了再实跑。`--samples 2` = 3 款构图 × 2 张 = 6 张候选。配方一览：`style_repaint`（真人重绘·showcase 配方）/ `product_studio` / `hands_on_object` / `food_documentary` / `lifestyle_mood` / `symbolic_no_person`（内含医学/设计题材分流）。
+### 2. 双项确认门：人像和标题一次问完
 
-### Step 6 · 智能体逐张读图，按验收清单筛选，只交付达标的 3 张
+先读 [cover_title_strategy.md](references/cover_title_strategy.md) 并准备 3 个标题候选。`has_real_person=true` 时，在同一条消息里同时展示两组选项：
 
-**验收清单**（每张逐条过，任一不过 = 淘汰）：
-1. 标题大且清晰：横向占画面 ~75-90%，手机缩略图距离一眼可读
-2. 标题不顶边、不被裁切，有安全边距
-3. 字体有设计感（非"纯色块+平铺字"的偷懒做法）
-4. 无假人脸（真人模式则核对：是垫图那个人，无明显漂移）
-5. 无内容泄漏、无水印署名、无错别字
-6. 美感/构图/冲击力达标——以这些为参照系：极繁敲码涂鸦（showcase）、日料毛笔字、封面设计描边艺术字；像"黄底白字居中"那种平庸图直接淘汰
-7. 主体完整、色彩和谐（官方 5 步标准）
-8. 配色贴品牌/主题（OpenAI≠Claude 橙），且同组变体色调有差异、不千篇一律
+**人像**
 
-6 张里挑最好的 3 张，生成 base64 内嵌的交付 HTML（图+说明+推荐位），`open` 给用户。若达标不足 3 张：分析失败原因 → 微调提示词或换构图 → 只补跑缺的款（别整组重跑）。
+1. 上传人像（推荐，身份最准确）
+2. 取视频帧（仅 `portrait_frame_quality=good` 时提供；会风格化重绘，神似但非精确）
+3. 不放人像
 
-### Step 7 · 反馈迭代
+**标题**
 
-用户逐张点评后：意见是**单张问题** → 只改那张的构图句重跑；意见是**通用问题**（字体/排版/配色风格）→ 改 `cover_pipeline.py` 里的 TRIM_RULE 或对应配方函数，**把教训沉淀进代码**，再重跑。这是这套系统持续变强的飞轮，不要只改图不改规则。
+A. 稳妥清晰：锚点 + 内容范围
+B. 收益承诺：锚点 + 用户收益，通常优先推荐
+C. 任务型探索：锚点 + 有任务信息量的痛点/问题
 
-### Step 8 ·（可选下游）4:3 横版 = 同配方直生，不要改造竖版图
+每个标题候选写：标题大字、类型、锚点、理由、证据依据、证据物。不要用“别只会问 AI”这类泛情绪代替主题。最后明确提示用户一次回复组合，例如 `2B`；选择上传照片时可附图并回复 `1B`。
 
-**禁止**用旧脚本 `generate_landscape_from_cover.py` 拿 3:4 成品改造 4:3（实测会劈成"左半文字+右半画面"的拼贴，不可用）。正确做法：**用同一配方直接生 4:3**——
+两项选择互不依赖，不得先问人像、等一轮回复后再问标题。视频没有真人时只展示标题。视频帧质量差时不提供取帧，或明确标为不推荐。用户只回答其中一项时，保存已确认项，只补问缺少项；选择上传但没附图时，也只补要照片，不重新问标题。
+
+即使封面主体更像硬币、产品、实物或流程，只要视频有清晰真人仍要展示人像选项。用户一次回复后，依次记录两项状态：
 
 ```bash
-python3 scripts/cover_pipeline.py --analysis "$WORKDIR/analysis.json" \
-  --title '<同标题>' --hook '<同钩子>' --person-mode <同竖版> [--portrait <同人像>] \
-  --ratio 4:3 --samples 2 --out "$WORKDIR/covers_4x3"
+python3 scripts/cover_workflow_state.py choose-person \
+  --job "$WORKDIR/cover_job.json" --mode <uploaded-photo|frame-cutout|no-person> \
+  [--portrait '<face-crop>'] [--pose-reference '<original-full-frame>']
 ```
 
-pipeline 会自动给提示词追加横版构图指令（主体中/右占半、标题顶部或左侧、同一视觉系统）。出图后同样按 Step 6 清单读图筛选。
+`portrait` 是默认身份参考。应优先保留清晰脸、帽子/发型、领口和部分肩膀；`pose-reference` 只供 Dreamina 的实验性 `grounded` 模式使用，不进入默认 `recipe-direct`。
 
-## 深挖资料（references/）
+没有真人时，直接选 `--mode auto`。用户明确说“全自动”时，可根据分析代替他做出人像和标题选择，但仍要把选择写入 job。
 
-- `portrait_gate_and_typography.md` — 人像门 3 选项全文 + 取帧转正依据 + 字体规则来历
-- `SHOWCASE_winning_prompt.md` — showcase 级风格化重绘配方复盘（可直接套用的模板）
-- `style_repaint_recipe.md` / `aesthetic_3_tricks.md` — 融合模式演化史 + 美感三招
-- `cover_generation_SOP.md` — 完整 SOP（含垫图为何降级为可选增强的全过程）
-- `douyin_cover_standard.md` — 官方平台红线（≤10字/无假脸/完整明亮/色彩和谐）
-- `library_tags.json` — 36 张案例标签（匹配校准用，**不垫图**）
+用户确认后记录标题：
 
-## Legacy（仅当 dreamina CLI 不可用时）
+```bash
+python3 scripts/cover_workflow_state.py choose-title \
+  --job "$WORKDIR/cover_job.json" \
+  --title '<主题/任务>' --hook '<点击理由>' [--subtitle '<可选短承诺>']
+```
 
-旧基线为 Seedream API 路线：`scripts/run_cover_workflow.py --video '<video.mp4>'`（需 VCG_VLM_API_KEY / VCG_IMAGE_API_KEY，Doubao Seedream，详见 `references/openclaw_seedream_text_workflow.md` 与各 checklist）。其分析/抽帧/横版/一致性脚本仍被新工作流复用；其"无参考裸生成标题必小"等旧结论已被新排版铁律取代，以本文档为准。
+标题阶段只展示一套完整候选，不额外让用户选择“创意短写”。当视频命中创意拔高路线时，A/B 使用用户确认的完整文案；C 可以自动压缩为保留锚点的短判断，但不能新增事实、数字或更强结论。展示成片时必须明确说明 C 使用了什么短写，让用户通过选图决定是否接受。用户要求文案一个字不改时禁止自动压缩。
+
+### 3. 生成 3:4：三条视觉路线，不是同一张图换姿势
+
+默认生成 Image 2 请求：
+
+```bash
+python3 scripts/codex_showcase_prompt_builder.py \
+  --job "$WORKDIR/cover_job.json" --analysis "$WORKDIR/analysis.json" \
+  --ratio 3:4 --engine image2 --out "$WORKDIR/covers_3x4"
+```
+
+读取 `$WORKDIR/covers_3x4/cover_requests.json`。每个 route 的 `reference_images` 必须按 `reference_roles` 原顺序传给 `image_gen`，完成后保存到 `expected_output`。
+
+- `identity_reference`：只锁定真人身份。
+- `content_reference`：锁定当前视频真实的官方品牌物、产品或结果，不继承来源图的文字与布局。
+- `style_reference`：只学习构图、层级、字体、材质和配色，绝不复制文字、人脸、事实、UI 或主体。
+- 三路线必须在构图、主视觉、证明方式和配色气质上不同。
+- 使用 `camera_review_editorial` 时，保留“超大比较标题 + 前景真人 + 一条胶片样片 + 器材阵列”的传播结构，但三路线仍要改变主视觉重心和空间关系，不能复制同一版式三次。
+- 使用 `creator_product_interaction` 时，保留“巨大短标题 + 真人态度 + 一个准确品牌物 + 明确互动”的传播结构；三路线至少分别测试持物、递近、吸附/开启等不同动作，品牌物必须来自当前官方 `content_reference`。
+
+生成后逐张读图。默认直接在 Codex 对话内按路线展示通过质检的原图，不创建、不打开 HTML 评审页。每张完成后立即展示；不要等三张全部结束才第一次反馈。尺寸或文字失败时只重做该路线，并明确告诉用户正在修正什么。
+
+只有用户明确要求“评审页”“浏览器对比页”“批量汇报页”时，才运行：
+
+```bash
+python3 scripts/generate_showcase_review_page.py \
+  --manifest "$WORKDIR/covers_3x4/cover_requests.json" \
+  --output "$WORKDIR/封面评审页_3x4.html"
+```
+
+评审页不得放在默认生成链路或用户等待链路中。用户能在 Codex 内看图时，直接展示原图并让用户回复路线编号。
+
+只交付过质检的图。按原图和 `180x240` 缩略图同时判断：一级钩子、一个主证明物、人物信任是否成立；有错字、叠字、断肢、人物漂移、课程海报/仪表盘感、三张同质化或参考图内容泄漏，就针对该路线重做。
+
+登记真实成片并等用户选择：
+
+```bash
+python3 scripts/cover_workflow_state.py register-candidate \
+  --job "$WORKDIR/cover_job.json" --ratio 3:4 --route '<route>' --image '<actual-image>' \
+  --manifest "$WORKDIR/covers_3x4/cover_requests.json"
+python3 scripts/cover_workflow_state.py select-vertical \
+  --job "$WORKDIR/cover_job.json" --route '<selected-route>'
+```
+
+### 4. 生成 4:3：只续作选中的 3:4
+
+选中竖版后才允许执行：
+
+```bash
+python3 scripts/codex_showcase_prompt_builder.py \
+  --job "$WORKDIR/cover_job.json" --analysis "$WORKDIR/analysis.json" \
+  --ratio 4:3 --engine image2 --out "$WORKDIR/covers_4x3"
+```
+
+该命令会产生两张原生横版候选：`faithful` 和 `thumbnail`。两者都必须保留选中竖版的标题、人物身份和服装、英雄物、配色氛围、字体材质和传播关系；允许为横版重建标题断行、人物位置、机位、景别和前后景。严禁使用 `generate_landscape_from_cover.py`、Pillow 拉伸、拼贴或裁切。
+
+以 `320x240` 缩略图检查横版：一级钩子应占视觉面积约 45%-60%，必须比主题标签更大、更可读；人物不能退成远景，人物/英雄物和标题通过穿插、遮挡与透视形成一个整体，而不是左右各放半张图。含“产品名 + 中文结论”的标题必须做两级字块：产品名退为识别锚点，中文结论成为约 1.7-2 倍字高的第一视觉，禁止两行平均用力。对 `creator_product_interaction`，可以把同一品牌物重设为广角递近前景，但不能换 Logo、换人物或缩小标题；若模型无法稳定处理持物接触，品牌物固定在独立底座，人物只做留有明确空隙的单指指向，禁止半接半捧、悬浮在手间或手指穿模。登记候选、选择最终横版后 job 才完成。
+
+### 5. Dreamina / Seedream 备选或对照
+
+Image 2 未达标、用户要求 Seedream、或用户要求同题 A/B 时，复用同一 job：
+
+```bash
+python3 scripts/codex_showcase_prompt_builder.py \
+  --job "$WORKDIR/cover_job.json" --analysis "$WORKDIR/analysis.json" \
+  --ratio 3:4 --engine dreamina --dreamina-model auto \
+  --dreamina-mode recipe-direct --dreamina-resolution 2k \
+  --out "$WORKDIR/covers_seedream"
+```
+
+读取 manifest 中的 `dreamina_command`，先核对模型能力、比例、标题契约和路径，再原生执行：
+
+```bash
+python3 scripts/execute_dreamina_manifest.py \
+  --manifest "$WORKDIR/covers_seedream/cover_requests.json"
+```
+
+该脚本不会二次裁切；Dreamina 返回的尺寸与 manifest 比例不符时直接失败。不要用旧 `generate_ai_covers.py` 传输 4:3 请求，因为它会按历史竖版画布裁图。不要把两台模型的输出混成“不同创意路线”；它们是同一创意计划的不同渲染器。
+
+Dreamina 必须走自己的适配器，不直接复用 Image 2 长提示词：
+
+- 默认 `recipe-direct` 对齐已验收的 v1.1：真人路线只传一张 `identity_reference`，无人路线纯 `text2image`；不传案例封面、选中竖版、UI 截图或内容帧。模型靠题材配方直生，不做垫图模仿。唯一例外是 `creator_product_interaction`：品牌物精度决定成败时使用 `grounded`，参考图严格限制为一张身份图加一张当前官方品牌资产。
+- 默认使用 `2K`。`4K` 只作为固定其他变量后的单独 A/B，不把更高分辨率误当作更好构图。
+- Dreamina 的 4:3 仍要求用户先选中 3:4，默认把该成片作为 `selected_vertical_reference`，并结合身份图、官方品牌物和 Dreamina 短配方原生重构横版；它是系列续作参考，不是扩图母版。若参考导致横版机械照搬、重复文字或构图变挤，仅重跑该横版并使用 `--no-dreamina-use-selected-cover` 回退到无成片参考的原生重生。
+- 提示词必须是短中文视觉配方：主题、单一构图、一个结果物、人物动作、字体材质、配色和禁项。不要带完整视频分析、证明链、英文续作契约或多套相反构图。
+- 三路线分别使用“冲击海报 / 复古编辑 / 电影场景”视觉语法，构图和材质都要拉开，不只是换人物姿势。
+- `creator_product_interaction` 使用“稳定持物 / 广角递近 / 动态拔高”三路线。前两版守住准确文字、人物和品牌物；第三版使用立体编辑大字、官方品牌色侧光、近景品牌物和更强动作争取 Showcase 上限。其 4:3 动态版默认采用“品牌物固定落地 + 人物明确指向”，不复用竖版的双手递近或接住动作；标题按产品锚点与结论重字分级。三版不得退化为同一张黑底产品肖像。
+- 只有真实主体精度明显比美感更重要时，才显式改用 `--dreamina-mode grounded --content-reference '<结果帧>'`；一次最多再加一张内容图，并单独质检 UI 泄漏和版式变碎。
+- 先看 `180x240` 缩略图。大面积空底、画中画、截图矩形、椅子原背景、杂字、人物近脸贴图或服装漂移，均视为失败并只重跑对应路线。
+
+旧 Seedream 保底命令和配方保持独立，不用新适配器覆盖；新旧模型对照时固定视频、文案、人像、内容帧、比例和路线，只改变模型或适配器一个变量。
+
+## 参考资料
+
+- [cover_title_strategy.md](references/cover_title_strategy.md)：标题的“锚点 + 理由”。
+- [style_profiles.json](references/style_profiles.json)：已验证的视觉风格族和同比例参考图。
+- [style_reference_workflow.md](references/style_reference_workflow.md)：参考图角色与内容泄漏防线。
+- [creator_product_interaction_playbook.md](references/creator_product_interaction_playbook.md)：真人、官方品牌物与广角互动的竖横版规则。
+- [story_hook_black_gold_design_review.md](references/story_hook_black_gold_design_review.md)：从课程海报重置为抖音精选缩略图的方法。
+- [douyin_cover_standard.md](references/douyin_cover_standard.md)：平台硬红线。
+
+`cover_pipeline.py`、`run_cover_workflow.py` 和旧 Seedream 文档仅用于历史保底或已有评测。不要让它们覆盖 v2 的状态门、创意计划和横版续作规则。

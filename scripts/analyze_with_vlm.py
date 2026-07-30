@@ -112,6 +112,16 @@ def normalize(payload, frames):
         "mood": analysis.get("mood", ""),
         "content_summary": analysis.get("content_summary", ""),
         "hook_summary": analysis.get("hook_summary", ""),
+        "hook_type": analysis.get("hook_type", ""),
+        "verified_proof": analysis.get("verified_proof", []),
+        "cover_promise": analysis.get("cover_promise", ""),
+        "low_barrier_input": analysis.get("low_barrier_input", ""),
+        "high_value_result": analysis.get("high_value_result", ""),
+        "technical_path": analysis.get("technical_path", ""),
+        "proof_chain": analysis.get("proof_chain", []),
+        "visual_proof_objects": analysis.get("visual_proof_objects", []),
+        "best_cover_type": analysis.get("best_cover_type", ""),
+        "selected_style_profile": analysis.get("selected_style_profile", ""),
         "title_strategy": analysis.get("title_strategy", ""),
         "recommended_frame": analysis.get("recommended_frame", default_frame),
     }
@@ -147,11 +157,17 @@ Analyze frames from a short video to design social cover images.
 Return JSON only. Use {language_hint} for title candidates.
 
 Benchmark rules for Chinese tech-knowledge covers:
-- A cover title must create a click hook, not merely summarize the video.
-- Prefer industry-specific hooks: pain point, risk, reversal, real test result, mistake, before/after, strong curiosity.
-- For AI/dev-tool videos, good hooks include real-use pain, account risk, workflow change, time/result contrast, and "is it worth using".
-- Primary cover title should be 4-10 Chinese characters. Keep each visual text line short, ideally no more than 5 Chinese characters.
-- Cover copy and the original video title should not be identical; it needs information gain.
+- A cover title has two parts: anchor + reason. The anchor lets the target viewer recognize the topic; the reason makes them click now.
+- For AI/dev-tool tutorials, every candidate must keep a recognizable anchor: Agent Skills, Codex, Claude Code, GPT, Skill, workflow, install, call, create, package, reuse, write, build, or practice.
+- The three candidates should differ by reason: clear content scope, user benefit, and task-specific exploration/pain/curiosity.
+- Do not replace a specific topic with a generic hook. "别只会问 AI", "让它替你干活", and "给它装个技能" can be supporting emotion, but they are too vague as standalone main titles unless a concrete anchor like Skill or workflow remains visible.
+- Prefer concrete benefits over empty emotion: 从安装到实战, 一条讲透, 小白也能上手, 让 AI 反复干活, 做出专属 Skill.
+- Use numbers, results, "best/first", rankings, income, follower growth, media exposure, authority claims, or "靠 X 做到 Y" only when visible frames, video title, subtitles, or user-provided context prove them. Do not invent them.
+- For Codex/Image 2 showcase covers, identify a cover promise: the shortest promise the cover should make users believe. Good promises often combine low-barrier input + high-value result, e.g. 一张图 -> 做出3D手办, 做一个 Skill -> 让 AI 反复干活.
+- Also identify a visual proof chain that can be drawn on the cover: input/problem -> method/tool -> result. The proof chain must come from visible frames, the video title, or concrete video understanding.
+- The main cover title should not be a feature list. Prefer the user-facing result or transformation; use technical path as smaller subtitle.
+- Primary cover title should be short and readable. Keep each visual text line compact, ideally no more than 5 Chinese characters or 2-3 English words.
+- Cover copy and the original video title should add information gain while preserving the real subject.
 - If a person appears in the video, do not invent a new person. Set person_policy to "real-person-only" and needs_real_person_asset to true when a person should appear on the cover.
 - If no reliable real-person asset is available, recommend a no-person cover using product/UI/symbolic visuals instead.
 
@@ -173,18 +189,33 @@ Return exactly:
     "mood": "one sentence cover mood",
     "content_summary": "one sentence summary",
     "hook_summary": "the strongest click hook in one sentence",
+    "hook_type": "authority_proof | result_proof | method_reveal | contrarian | question | summary",
+    "verified_proof": ["only proven numbers/results/authority claims; empty array if none"],
+    "cover_promise": "the one promise a high-click cover should communicate",
+    "low_barrier_input": "the low-friction input or starting point, e.g. 一张图/一句话/小白/不用建模",
+    "high_value_result": "the desirable result, e.g. 做出3D手办/让AI反复干活/讲透Skill",
+    "technical_path": "method/tool path, e.g. AI建模 + 一键拆件",
+    "proof_chain": ["input/problem", "method/tool", "result"],
+    "visual_proof_objects": ["3 to 6 drawable proof objects, e.g. input image card, 3D model UI, printed figure"],
+    "best_cover_type": "结果前置型 | 教程说明型 | 痛点反差型 | 人物背书型 | 实物证明型",
+    "selected_style_profile": "optional style profile id, or empty string",
+    "title_inputs": {{
+      "anchor": "the recognizable topic/task object or action",
+      "reason": "the main reason to click: scope, benefit, pain, curiosity, contrast, or verified result",
+      "evidence_source": "source for any number/result/authority claim, or empty string if none"
+    }},
     "title_strategy": "why the title candidates fit this industry",
     "recommended_frame": "frames/frame_XX.jpg"
   }},
-  "titles": ["3 punchy cover titles, 4-10 Chinese chars or 2-5 English words"],
-  "subtitles": ["3 short explanatory subtitles"],
+  "titles": ["3 compact cover titles that preserve topic recognition"],
+  "subtitles": ["3 short reasons: content scope, user benefit, or task-specific exploration"],
   "title_candidates": [
-    {{"title": "candidate", "subtitle": "candidate", "hook_type": "risk/reversal/result/pain/curiosity", "reason": "short reason"}}
+    {{"title": "candidate", "subtitle": "candidate", "route": "clear|benefit|task_explore", "anchor": "recognizable topic/task object", "reason_to_click": "why this is worth clicking", "cover_promise": "what this title promises", "visual_proof": "what visual object can prove it", "evidence_source": "only if using number/result/authority claim", "hook_type": "benefit/result/reversal/pain/curiosity/summary"}}
   ]
 }}
 
-Bad title examples: "Claude使用实测", "AI工具介绍", "真实感受分享".
-Better title examples for an AI dev tool experience video: "别急着上手", "两周后真相", "用到被封号", "真的省时间?", "踩坑后再说".
+Bad title examples: "Claude使用实测", "AI工具介绍", "真实感受分享", "别只会问AI" when it hides the specific topic.
+Better AI/dev-tool tutorial pattern: "Agent Skills / 从安装到实战"; "做一个 Skill / 让 AI 反复干活"; "不会写 Skill？ / 这条讲清楚"; "Codex / 一条讲透".
 Do not invent a presenter. Do not recommend generic stock-photo imagery.
 """.strip()
 

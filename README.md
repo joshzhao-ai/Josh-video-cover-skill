@@ -1,117 +1,150 @@
-<p align="center">
-  <img src="assets/banner.jpg" alt="AI 封面工坊 · Video Cover Skill" width="100%">
-</p>
+<h1 align="center">Josh Video Cover Skill</h1>
 
-<h1 align="center">🎬 Josh Video Cover Skill</h1>
-
-<p align="center"><b>真正的端到端：上传一条视频，得到有点击欲、画面美感在线的封面。</b><br>
-<sub>看片 · 定题 · 选风格 · 出图 · 质检 —— 中间全部由 AI 智能体完成，你只做两个决定：要不要露脸、用哪个标题。</sub></p>
+<p align="center"><b>把一条本地视频，变成一套表达清晰、有点击欲、跨尺寸一致的短视频封面。</b></p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/End--to--End-视频进%20→%20封面出-e8453a" alt="e2e">
-  <img src="https://img.shields.io/badge/Platform-Claude%20Code%20%7C%20Codex-blueviolet" alt="platform">
-  <img src="https://img.shields.io/badge/Engine-即梦%20Dreamina%205.0-ff6b4a" alt="engine">
-  <img src="https://img.shields.io/badge/Verified-8%20条真实视频人工验收-2da44e" alt="verified">
+  <img src="https://img.shields.io/badge/Workflow-Video%20to%20Cover-111111" alt="workflow">
+  <img src="https://img.shields.io/badge/Engine-GPT%20Image%202-10a37f" alt="GPT Image 2">
+  <img src="https://img.shields.io/badge/Engine-Dreamina%205.0%20Pro-246bfd" alt="Dreamina 5.0 Pro">
+  <img src="https://img.shields.io/badge/Output-3%3A4%20%2B%204%3A3-f59e0b" alt="3:4 and 4:3">
+  <img src="https://img.shields.io/badge/Version-2.0-e5484d" alt="version 2.0">
 </p>
 
-> 本页所有配图（包括顶部横幅）均由本 skill 自己生成 —— 这就是 demo。
+> 这不是一份“把标题塞进提示词”的模板。它是一条带用户确认门、双模型适配器、视觉路线分叉和缩略图质检的完整制作流程。
 
----
+## 先看结果
 
-## ✨ 作品墙
+以下均由本 Skill 的真实工作流生成，并从候选中人工选出最终版。每组 4:3 都是选中 3:4 后的原生横版续作，不是简单裁切。
 
-以下每张都是「丢进一条真实视频 → 端到端自动产出」并经人工验收的优质案例。
+### Dreamina 5.0 Pro：真人与产品互动
 
-| AI 工具实测 · Claude 橙 | Codex · OpenAI 青 | Codex · 复古套印 | 相机测评 · 取帧成人像 |
-|:---:|:---:|:---:|:---:|
-| <img src="assets/g_cc_showcase.jpg" width="220"> | <img src="assets/g_codex_jump.jpg" width="220"> | <img src="assets/g_codex_retro.jpg" width="220"> | <img src="assets/g_camera_person.jpg" width="220"> |
+| 3:4 竖版 | 4:3 横版 |
+|:---:|:---:|
+| <img src="assets/showcase/kimi-k3-dreamina-3x4.jpg" width="300" alt="Kimi K3 Dreamina 3:4"> | <img src="assets/showcase/kimi-k3-dreamina-4x3.jpg" width="520" alt="Kimi K3 Dreamina 4:3"> |
 
-| 相机测评 · 暖调跃起 | 美食纪录片 · 毛笔字 | 设计教程 · 封面即示范 | 医学科普 · 手术室插画 |
-|:---:|:---:|:---:|:---:|
-| <img src="assets/g_camera_jump.jpg" width="220"> | <img src="assets/g_food_b.jpg" width="220"> | <img src="assets/g_design_a.jpg" width="220"> | <img src="assets/g_med_b.jpg" width="220"> |
+短判断大字、真人态度、准确品牌物和明确互动动作共同完成点击钩子。横版重新设计标题占比与人物关系，同时延续服装、主色和品牌物。
 
-> 留意前三张：同一位创作者，讲 Claude 的封面是珊瑚橙、讲 Codex 的封面是 OpenAI 青 —— **配色跟品牌走**是写进配方的规则，不是巧合。
+### Dreamina 5.0 Pro：结果动作化
 
-### 同一案例 · 双比例直出
+| 3:4 竖版 | 4:3 横版 |
+|:---:|:---:|
+| <img src="assets/showcase/ai-ppt-dreamina-3x4.jpg" width="300" alt="AI PPT Dreamina 3:4"> | <img src="assets/showcase/ai-ppt-dreamina-4x3.jpg" width="520" alt="AI PPT Dreamina 4:3"> |
 
-竖版 3:4 与横版 4:3 都按同一配方直接生成 —— 同一视觉系统，不是裁切改造。
+不堆 UI 和能力列表，而是把“AI 做 PPT”转成一个可记住的撕纸动作。标题、人物和结果证明在缩略图里仍然成立。
 
-| | 3:4 竖版 | 4:3 横版 |
-|:---:|:---:|:---:|
-| **设计教程** | <img src="assets/pair_c_34.jpg" width="240"> | <img src="assets/pair_c_43.jpg" width="340"> |
-| **相机测评** | <img src="assets/pair_e_34.jpg" width="240"> | <img src="assets/pair_e_43.jpg" width="340"> |
+### GPT Image 2：黑金知识海报
 
----
+| 3:4 竖版 | 4:3 横版 |
+|:---:|:---:|
+| <img src="assets/showcase/skill-image2-3x4.jpg" width="300" alt="Skill Image2 3:4"> | <img src="assets/showcase/skill-image2-4x3.jpg" width="520" alt="Skill Image2 4:3"> |
 
-## 🧠 工作原理
+主标题负责主题和冲击，副标题负责收益，笔记本只保留一层方法证据。横版重排后仍是同一 campaign，而不是竖图向两边扩画布。
+
+### GPT Image 2：品牌化科技封面
+
+| 3:4 竖版 | 4:3 横版 |
+|:---:|:---:|
+| <img src="assets/showcase/codex-image2-3x4.jpg" width="300" alt="Codex Image2 3:4"> | <img src="assets/showcase/codex-image2-4x3.jpg" width="520" alt="Codex Image2 4:3"> |
+
+同一位创作者、同一套主题，在不同尺寸里保持身份、品牌色和字体材质，同时按横竖场景分别优化信息层级。
+
+## 它解决什么
+
+普通生图流程经常输在模型调用之外：标题没有任务信息、三张候选几乎一样、人物被偷偷换衣、横版只是重新生成一张相似图、成片在大图里好看但缩略图里读不清。
+
+本 Skill 把这些问题做成流程约束：
+
+- **标题先确认**：用“锚点 + 点击理由”同时保证主题识别和获得感，强结果必须有视频证据。
+- **人像由用户决定**：上传照片、取视频帧或不放人像，与标题候选在同一条消息里一次确认。
+- **三张是三条路线**：构图、主视觉、证明方式和色彩气质必须拉开，不做同一母版换姿势。
+- **4:3 是原生续作**：读取用户选中的 3:4 成片，继承不可变项，再为横版重建断行、景别和空间关系。
+- **缩略图才是考场**：按 3:4 的 `180x240` 和 4:3 的 `320x240` 检查标题、人物、结果物与错字。
+- **默认不等评审页**：成片直接在对话中逐张展示；只有用户明确需要批量对比时才生成 HTML。
+
+## 一条工作流，两套适配器
+
+两套模型共享视频分析、标题、人像、英雄物、证据物与用户选择，但不共享提示词写法。
+
+| 适配器 | 最适合 | 提示词策略 | 参考图策略 |
+| --- | --- | --- | --- |
+| GPT Image 2 | 追求视觉上限、复杂构图与强设计感 | 严格画面契约、参考图角色分离、路线级创意 | 身份、内容、风格分别声明职责 |
+| Dreamina / Seedream | 稳定量产、模型直出与模型能力验证 | 短中文视觉配方，按题材控制构图与材质 | 默认少参考；准确品牌物和横版续作按需加入 |
+
+Dreamina 版本不会靠文字猜测。`scripts/detect_dreamina_capabilities.py` 会先读取本机 CLI 能力；CLI 没有明确报告 Pro 时，输出也不会冒充 5.0 Pro。
+
+## 工作流
 
 ```mermaid
 flowchart LR
-    A[📹 输入视频] --> B[抽帧 12 张]
-    B --> C[🧠 智能体看帧分析<br>垂类/主体/钩子/真人检测]
-    C --> D{真人口播?}
-    D -- 是 --> E[🚪 人像门<br>上传照片 / 取帧 / 不放人像]
-    D -- 否 --> F
-    E --> F[📋 标题确认 ≤10字钩子]
-    F --> G[🎨 题材配方直生<br>超采样 3 款 × 2 张]
-    G --> H[🔍 智能体逐张读图<br>8 条验收清单筛选]
-    H --> I[✅ 交付最佳 3 张<br>可选 4:3 横版]
+    A[输入本地视频] --> B[抽帧与内容分析]
+    B --> C[同一条消息确认人像与标题]
+    C --> D[生成三条差异化 3:4 路线]
+    D --> E[逐张质检并让用户选择]
+    E --> F[原生生成两张 4:3 续作]
+    F --> G[缩略图质检与交付]
 ```
 
-**核心理念：配方直生，而非垫图模仿。** 案例库只用来校准"该走哪套配方"，每张图都按题材配方+排版铁律全新生成 —— 实测比垫参考图（易泄漏、易串味）质量高一个档位。
+## 安装
 
-## 🎯 七套题材配方
-
-| 视频类型 | 配方 | 风格 |
-|---|---|---|
-| 真人口播（AI工具/测评） | 风格化重绘 | 极繁丝网印刷，人物按海报风重绘+点题动作 |
-| 产品测评（芯片/数码） | 产品影棚 | 发布会主视觉，金属玻璃质感 |
-| 实物操作（拆机/维修） | 手+工具+实物 | 微距工作台，专业拆解感 |
-| 美食纪录片 | 电影感食物微距 | 暗底+毛笔大字+红印 |
-| 医学科普 | 医疗符号海报 | 冷青绿手术室+扁平插画 |
-| 设计/排版教程 | 设计感海报 | 撞色描边大字，封面即示范 |
-| 光影氛围（相机/出片） | 暖调胶片 | 颗粒光晕，生活美学 |
-
-外加贯穿全部的硬规则：**标题占画面 75-90% 不顶边**、**字体设计多样化**（艺术字/书法/描边，拒绝色块平铺）、**配色跟品牌走**（OpenAI→科技青蓝，Claude→珊瑚橙）、**≤10 字主文案**、**绝不编造真人脸**。
-
-## 🚀 安装
-
-### Claude Code（开箱即用）
+### Codex
 
 ```bash
 git clone https://github.com/joshzhao-ai/Josh-video-cover-skill.git \
-  ~/.claude/skills/video-cover-generator-eval-20260525
+  ~/.codex/skills/video-cover-generator
 ```
 
-新会话给视频路径并说「做封面」即自动触发。
+重新打开 Codex 任务后，附上本地视频并说：
 
-### Codex / 其他智能体
+```text
+给这个视频制作封面
+```
 
-把本仓库放进项目目录，智能体经 `AGENTS.md` 找到并遵循 `SKILL.md`（需支持多模态读图）。
+Codex 环境具备 `image_gen` 时默认走 GPT Image 2；需要Seedream 模型对照时，明确说“用即梦 5.0 Pro 跑一遍”。
 
-### 依赖（自行配置）
+### Claude Code
 
 ```bash
-# 生图引擎：即梦 CLI（需自己的即梦账号与积分）
-curl -s https://jimeng.jianying.com/cli | bash
-dreamina user_credit   # 触发登录
-
-brew install ffmpeg    # 抽帧
+git clone https://github.com/joshzhao-ai/Josh-video-cover-skill.git \
+  ~/.claude/skills/video-cover-generator
 ```
 
-> 引擎可替换：编排逻辑在 `scripts/cover_pipeline.py`，把 dreamina 调用换成任意文生图 API 即可。
+Claude Code 默认使用本机可用的 Dreamina / Seedream 路线。
 
-## ⚠️ 已知限制（v1.1）
+### 本地依赖
 
-- 标题偶发偏小/生僻字写错 → 超采样筛选兜底，极端时重出一轮
-- 取视频帧做人像 = 风格化重绘，神似非精确；要精确请上传清晰正脸照
-- 实物操作类（手部特写）整体弱于其他题材
-- 生图消耗即梦积分（约 6-12 张/条视频，2k）
+```bash
+python3 -m pip install -r scripts/requirements.txt
+brew install ffmpeg
+```
 
-## 🤝 反馈
+使用 Dreamina 时，还需要安装并登录可用的 `dreamina` CLI，并确保 `dreamina --help` 能在当前终端运行。仓库不会替用户保存账号、Cookie 或 API Key。
 
-开 Issue：附上不满意的封面 + 一句"哪里不行"。每条反馈都会被沉淀成配方规则 —— 这个 skill 就是这么长大的。
+## 目录
 
----
+```text
+SKILL.md                                   主流程、状态门与质量标准
+scripts/cover_workflow_state.py           防跳步状态机
+scripts/codex_showcase_prompt_builder.py  双模型请求与提示词构建
+scripts/detect_dreamina_capabilities.py   Dreamina 能力探测
+scripts/execute_dreamina_manifest.py      按 manifest 执行即梦请求
+references/cover_title_strategy.md         标题策略
+references/style_profiles.json            已验证风格族
+assets/style_references/                  同比例风格参考
+assets/showcase/                          本页最终案例
+evals/                                    回归评测样例
+```
 
-<p align="center"><sub>v1.1 · 2026-06 · 由 8 条真实视频逐条人工验收打磨 · Made by Josh × Claude</sub></p>
+## 质量边界
+
+- 取视频帧做人像属于风格化重绘，神似但不保证身份完全准确；高要求请上传清晰本人照片。
+- 生图模型仍可能写错生僻字或产生手部问题。Skill 的策略是逐路线质检并定向重做，不把失败图混入交付。
+- 官方 Logo、产品外观和强结果数据必须来自当前视频或官方素材，不能从参考封面借用。
+- 模型版本、参考图和最终人工选择都会影响结果。对比模型时应固定视频、文案、人像、比例与路线，只改变一个变量。
+
+完整验收方式见 [EVALUATION.md](EVALUATION.md)，版本变化见 [CHANGELOG.md](CHANGELOG.md)。
+
+## 反馈
+
+提交 Issue 时，请附上视频类型、选中的标题、3:4 与 4:3 成片、使用引擎，以及一句“哪里不行”。高价值反馈会被沉淀为可复现的规则或回归用例。
+
+<p align="center"><sub>v2.0 · Built by Josh with Codex and Dreamina</sub></p>
