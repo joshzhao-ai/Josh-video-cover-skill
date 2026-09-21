@@ -1,0 +1,92 @@
+[
+  {
+    "asset": "assets/published/codex-official-3x4.png",
+    "sha256": "9f61d177ce706ffac7a6b69768a921da61f14dae201873f5fc23bcb0a294eacd",
+    "transformation": "none"
+  },
+  {
+    "asset": "assets/published/codex-official-4x3.png",
+    "sha256": "db801bdf1f2ad03e688a5d0ab6f1cc0561aa992508ff1852995359c6fd2cc565",
+    "transformation": "none"
+  },
+  {
+    "asset": "assets/published/kimi-k3-3x4.png",
+    "sha256": "e54a6e1839ace39112794e33c9d6d5b2233d31584f6a883eb3a1914ecf649af3",
+    "transformation": "none"
+  },
+  {
+    "asset": "assets/published/claude-vs-codex-3x4.png",
+    "sha256": "dfa4d745cd0c8bf35d4877722d655f9513c34bee781d1ee460aed0f9a8887166",
+    "transformation": "none"
+  },
+  {
+    "asset": "assets/comparison/camera-gpt-skill.png",
+    "sha256": "775bdcd1c1d16ee5f62d9aa0c6e827b5687a9ac62c7dc0b0d7da81af95af6d3b",
+    "transformation": "none"
+  },
+  {
+    "asset": "assets/comparison/food-gpt-skill.png",
+    "sha256": "3096c0d1fc4477ec90cd29912b869cf88ccd56cdcf766fea8146a5798409d8a9",
+    "transformation": "none"
+  },
+  {
+    "asset": "assets/comparison/camera-direct.png",
+    "sha256": "b86a56a679d7807de51dbb9300c71974f1a0c94be57e9e3201e5a03961710397",
+    "transformation": "none"
+  },
+  {
+    "asset": "assets/comparison/camera-seedream-skill.png",
+    "sha256": "2bfa2ac475f1b19f1aa09bfd050bc43f54fef5e608c7ee367e9c5a30f7fcd736",
+    "transformation": "none"
+  },
+  {
+    "asset": "assets/comparison/food-seedream-skill.png",
+    "sha256": "19b6cd99180fb1f555fd87a9eba0e113a33c1f122ebd4809d69eeeb55f1bffe8",
+    "transformation": "none"
+  },
+  {
+    "asset": "assets/comparison/codex-direct.jpg",
+    "sha256": "656b374772818c6651d9193096b5d52a959d8941d23045b32fa7e594a10b4094",
+    "transformation": "none"
+  },
+  {
+    "asset": "assets/comparison/food-direct.jpg",
+    "sha256": "4f13ea1ba48a768a7459680486ff03d175c68e7a2d0f2ac73b491f8373cecbc3",
+    "transformation": "none"
+  },
+  {
+    "asset": "assets/comparison/codex-seedream-skill.jpg",
+    "sha256": "cd7f752e2afab0c5f0fa70d660b1104ba1d1a2df7127d5ef1497813b1f0b5a2b",
+    "transformation": "none"
+  },
+  {
+    "asset": "assets/published/claude-wrap-3x4.png",
+    "sha256": "b5747bb16a70ed3c8952b9a442fa4883e4714df8a4442ecda68799c7dd2f8183",
+    "transformation": "none"
+  },
+  {
+    "asset": "assets/published/claude-wrap-4x3.png",
+    "sha256": "baedac357d212543f39c8631b9c3ab8fb0d17f1cf798f4b5bdc49f08ff87baa9",
+    "transformation": "none"
+  },
+  {
+    "asset": "assets/evidence/codex-metrics.png",
+    "sha256": "18dab26a04106051c3b4fe2b01d9b609351c6dd53bc437e484046d5ee9f533b0",
+    "transformation": "crop_only"
+  },
+  {
+    "asset": "assets/evidence/kimi-metrics.png",
+    "sha256": "348bd4c74befbc27e15835bf1c26a97481fa1ce576d01b10476f87701e706b60",
+    "transformation": "crop_only"
+  },
+  {
+    "asset": "assets/evidence/claude-metrics.png",
+    "sha256": "f720a44c5ac9613e0e729201e167b8a28a9fef5a92fec5d6087b94d9d2185227",
+    "transformation": "crop_only"
+  },
+  {
+    "asset": "assets/evidence/versus-metrics.png",
+    "sha256": "96ab1630ae43dced46624e9755638966a6f479abc15e958e623dea864d7d41b6",
+    "transformation": "crop_only"
+  }
+]

@@ -31,17 +31,22 @@ def crop_from_face(image, face):
     x, y, fw, fh, w, h = face
     cx = x + fw / 2
     top = max(0, y - fh * 1.3)
-    bottom = min(h, y + fh * 5.2)
+    # Keep enough upper torso to lock neckline, sleeve type and visible prints,
+    # while avoiding the lower-third subtitles common in source videos.
+    subtitle_safe_bottom = h * 0.8
+    bottom = min(h, y + fh * 3.0, subtitle_safe_bottom)
     crop_h = bottom - top
-    crop_w = min(w, crop_h * 0.82)
+    crop_w = min(w, crop_h * 0.95)
     left = max(0, min(w - crop_w, cx - crop_w / 2))
     return image.crop((int(left), int(top), int(left + crop_w), int(bottom)))
 
 
 def central_portrait_crop(image):
     w, h = image.size
-    crop_w = int(w * 0.46)
-    crop_h = int(h * 0.9)
+    # Frontal-face detection often fails on caps or motion blur. In fallback
+    # mode keep the upper torso, but stop above the subtitle-safe lower third.
+    crop_w = int(w * 0.56)
+    crop_h = int(h * 0.74)
     left = (w - crop_w) // 2
     top = int(h * 0.04)
     return image.crop((left, top, left + crop_w, min(h, top + crop_h)))

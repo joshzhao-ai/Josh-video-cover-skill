@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 """
-一条龙封面流水线（skill 内置版，2026-06-10 由 8 条真实视频打磨定版）
-输入：视频分析 json（Claude 看帧手写）→ 匹配校准 → 人像门 → 选配方 → 即梦出图（配方直生，超采样）
+一条龙封面流水线（skill 内置版，2026-06-25 更新为 Codex 生图优先）
+输入：视频分析 json（Claude/Codex 看帧手写）→ 匹配校准 → 人像门 → 选配方 → 输出 Codex 生图请求或调用即梦出图
 
 用法：
   python3 cover_pipeline.py --analysis <analysis.json> --title <主标题≤6字> --hook <钩子≤6字> \
       [--person-mode auto|uploaded-photo|frame-cutout|no-person] [--portrait <人像图>] \
-      [--samples 2] [--out <输出目录>] [--dry-run]
+      [--subtitle <价值承诺>] [--style-profile <风格族>] [--style-reference <参考图>] \
+      [--samples 2] [--out <输出目录>] [--engine codex|dreamina] [--dry-run]
 
 核心决策（勿回退）：
-  · 配方直生：无人路线 text2image 纯提示词，绝不垫案例库封面图（垫图泄漏/串味，仅 60-70 分；配方直生 9.5）
-  · 真人路线 image2image 只垫【人像图】（用户上传 > 取视频帧），人物被风格化重绘
+  · 默认配方直生；Codex/Image 2 可按需加入一张同风格族、同比例的视觉参考图
+  · 风格参考只传递层级/构图/字体/材质/配色，禁止复制案例文字、人脸、事实或主体
+  · 真人路线只垫【人像图】（用户上传 > 取视频帧），人物被风格化重绘
   · 人像门：真人口播类必停下问 3 选项；产品/实物/美食/氛围类不问
   · 字体多样化：艺术字/书法/描边/复古印刷，色块只作局部点缀，禁整条纯色块平铺
 """
@@ -18,6 +20,7 @@ import json, os, argparse, subprocess, urllib.request, time
 
 SKILL_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_TAGS = os.path.join(SKILL_DIR, "references", "library_tags.json")
+STYLE_PROFILES = os.path.join(SKILL_DIR, "references", "style_profiles.json")
 DREAMINA = os.path.expanduser("~/.local/bin/dreamina")
 
 # ---------------- 阶段1：匹配（案例库仅作经验校准，不垫图） ----------------
@@ -68,15 +71,111 @@ def match(video, tags_path):
     cands.sort(key=lambda x: -x["score"])
     return cands[:4]
 
+def resolve_style_context(video, profile_name, ratio, explicit_refs):
+    """Resolve one style family plus optional user-supplied references.
+
+    The profile registry is relative to references/style_profiles.json so the
+    installed skill remains portable.
+    """
+    selected = profile_name
+    if selected == "auto":
+        selected = video.get("selected_style_profile", "")
+    profile = None
+    refs = []
+    if selected and selected != "none":
+        profiles = json.load(open(STYLE_PROFILES, encoding="utf-8"))
+        if selected not in profiles:
+            known = ", ".join(k for k in profiles if not k.startswith("_"))
+            raise ValueError(f"未知 style profile: {selected}；可用：{known}")
+        profile = dict(profiles[selected])
+        profile["id"] = selected
+        registered = profile.get("references", {}).get(ratio)
+        if registered:
+            refs.append(os.path.normpath(os.path.join(os.path.dirname(STYLE_PROFILES), registered)))
+    refs.extend(explicit_refs or [])
+    deduped = []
+    for ref in refs:
+        path = os.path.abspath(os.path.expanduser(ref))
+        if path not in deduped:
+            deduped.append(path)
+    if len(deduped) > 2:
+        raise ValueError("同一次生成最多使用 2 张 style_reference，避免风格平均化和内容泄漏。")
+    missing = [path for path in deduped if not os.path.isfile(path)]
+    if missing:
+        raise FileNotFoundError("风格参考图不存在：" + "；".join(missing))
+    return profile, deduped
+
+def style_profile_directive(profile, ratio):
+    if not profile:
+        return ""
+    dna = profile.get("visual_dna", {})
+    copy_policy = profile.get("copy_policy", {})
+    parts = [
+        f"【风格族：{profile.get('name', profile['id'])}】",
+        f"平台目标：{profile.get('platform_goal', '')}",
+        profile.get("prompt_directive", ""),
+        f"视觉层级：{dna.get('hierarchy', '')}",
+        f"字体与材质：{dna.get('typography', '')}",
+        f"配色：{dna.get('palette', '')}",
+        f"证据物：{dna.get('proof_object', '')}",
+        f"人物处理：{dna.get('portrait', '')}",
+        f"{ratio} 构图：{dna.get(ratio, '')}",
+        f"负向方向：{profile.get('negative_direction', '')}",
+        f"缩略图合同：{profile.get('thumbnail_contract', '')}",
+    ]
+    if copy_policy.get("allow_proof_card"):
+        parts.append(
+            f"允许一个与当前视频真实内容相关的证据卡，最多 "
+            f"{copy_policy.get('proof_labels_max', 4)} 个短标签；不确定的信息不要写。"
+        )
+    return "\n".join(p for p in parts if p)
+
+def profile_owned_prompts(profile, video, title, hook, subtitle, ratio, api):
+    """Let a selected style family own the visual recipe when it defines variants."""
+    if not profile:
+        return []
+    variants = profile.get("variants", {}).get(ratio, [])
+    if not variants:
+        return []
+    theme = video.get("content_summary", "")
+    elements = "、".join(video.get("key_elements", [])[:4])
+    if api == "image2image":
+        subject_rule = (
+            "人物必须来自 identity_reference：写实保留五官、发型、年龄、肤色和服装，"
+            "只改变构图、光线与海报化处理，不换脸、不增加第二个人。"
+        )
+    else:
+        subject_rule = "没有 identity_reference 时不要编造可辨识的真人脸；优先使用当前视频的真实主体或证据物。"
+    common = "\n".join([
+        "【风格族接管】忽略通用配方中的默认画风、动作和品牌配色，以本风格族为唯一视觉方向。",
+        f"当前视频主题：{theme}",
+        f"当前视频可画元素：{elements}",
+        subject_rule,
+        copy_rule(title, hook, subtitle),
+        style_profile_directive(profile, ratio),
+    ])
+    return [
+        (f"{profile['id']}_v{index}", common + "\n【本张构图变化】" + direction)
+        for index, direction in enumerate(variants, 1)
+    ]
+
 # ---------------- 阶段2：配方路由 ----------------
-TRIM_RULE = ("画面文字严格≤10字主文案：超大主标题「{title}」+「{hook}」；"
-             "仅此一处主标题；底部一行小号英文做装饰小字。绝不要副标题/要点列表/项目符号/多余文字/水印署名。文字逐字正确、主次分明。"
-             "【排版硬规则·必须遵守】"
-             "①字号极大：主标题横向占画面宽度约75-90%，一眼可读，绝不能小或纤细；"
-             "②留安全边距：标题距画面上/左/右边缘留出明显空隙，绝对不要顶到或被裁切到画面边缘；"
-             "③字体要有强设计感、手段多样：优先用 艺术字/书法/复古印刷字/立体描边+材质/关键词局部异色/与画面元素穿插融合 等丰富处理，做出高级排版感(参考：毛笔大字、复古丝网印刷标题、描边异色艺术字)；"
-             "③b 标题背板增强对比(深底封面尤其需要)：可用撞色实色块/斜切色带作为超大标题的背板来强化对比与冲击(如电光青蓝实色块衬白色立体描边大字、双色块错位分行)，但色块须有设计感(斜切/撕边/双色错位/与画面元素穿插)、字体本身仍要立体描边或异色；切忌毫无处理的'整条纯色块+平铺细字'(单调、设计感弱)；"
-             "④清晰：靠字体本身的粗壮、描边、与背景的明暗对比来保证可读，避开高光辉光与复杂纹理。")
+COPY_RULE = ("画面一级主钩子：超大主标题「{title}」+「{hook}」；{secondary}"
+             "除明确提供的一级标题、价值承诺和所选风格族允许的证据卡外，不要自行增加口号、署名、水印、平台标识或装饰性乱码。"
+             "所有文字逐字正确、主次分明。"
+             "【排版硬规则】"
+             "①一级标题必须在手机缩略图下一眼可读，但不要机械地铺满全屏；"
+             "②标题距画面边缘留出安全区，绝不顶边或裁切；"
+             "③字体要有强设计感，可用艺术字、书法、复古印刷、立体描边、关键词局部异色或与画面元素穿插；"
+             "④标题背板可用斜切、撕边、双色错位等设计增强对比，禁止普通纯色长条加平铺细字；"
+             "⑤靠字重、描边和明暗关系保证清晰，避开高光与复杂纹理。")
+
+def copy_rule(title, hook, subtitle=""):
+    if subtitle:
+        secondary = f"二级价值承诺必须逐字写为「{subtitle}」，字号明显小于一级标题；"
+    else:
+        secondary = "不设置二级副标题；"
+    return COPY_RULE.format(title=title, hook=hook, secondary=secondary)
 
 def pick_action(video):
     kw = " ".join(video.get("key_elements", [])) + video.get("content_summary", "")
@@ -125,7 +224,7 @@ def pick_bg(video):
         return "深藏青/近黑深色背景打底、整体高对比，主体与标题在深底上强烈跳出(避免浅灰白底)"
     return "中性深色背景打底、适度高对比"
 
-def style_repaint_prompts(video, title, hook):
+def style_repaint_prompts(video, title, hook, subtitle=""):
     theme = video.get("content_summary", "")
     action = pick_action(video); motif = pick_motif(video); palette = pick_palette(video)
     bg = pick_bg(video)
@@ -134,17 +233,17 @@ def style_repaint_prompts(video, title, hook):
               f"背景：{bg}。超大主标题压在撞色实色块/斜切色带背板上做强对比，标题文字白色立体描边、醒目跳出。")
     person = ("视觉风格：一个人物——直接用第一张照片里的人，写实重绘、五官长相发型精确保留本人神态(高神似度)；"
               "人物本身保持写实、不要卡通化，只对背景与排版做海报化/极繁处理，主体边缘描亮边从深底干净跳出，")
-    trim = TRIM_RULE.format(title=title, hook=hook)
+    trim = copy_rule(title, hook, subtitle)
     return [
         ("repaint_graff", common + person + f"半写实海报风，{action}，周围环绕飞出的{motif}与少量涂鸦点缀。" + trim),
         ("repaint_retro", common + person + f"半写实复古印刷海报风（粗颗粒+套色错位），抱臂站立自信看镜头、半身占画面约一半、人物突出，身后巨大发光主题元素剪影与放射状点线面。" + trim),
         ("repaint_jump", common + person + f"半写实动感海报风，单手高举主题道具腾空跃起、姿态张扬，身边环绕{motif}与速度线，点线面分布与前两款拉开差异。" + trim),
     ]
 
-def symbolic_prompts(video, title, hook):
+def symbolic_prompts(video, title, hook, subtitle=""):
     elems = "、".join(video.get("key_elements", [])[:4])
     theme = video.get("content_summary", "")
-    trim = TRIM_RULE.format(title=title, hook=hook)
+    trim = copy_rule(title, hook, subtitle)
     topics = " ".join(video.get("topic", []))
     if any(k in topics for k in ["医学", "麻醉", "健康", "手术", "药"]):
         common = (f"现代医学科普信息海报，半调质感，干净有秩序，真实手术室冷青绿光氛围与扁平医学插画结合。"
@@ -163,29 +262,29 @@ def symbolic_prompts(video, title, hook):
             ("symbolic_b", common + "构图：核心符号偏右、左侧大留白放标题，杂志感。背景（米白+深蓝套印）。" + trim),
             ("symbolic_c", common + "构图：等距信息拼贴铺满，秩序密集。背景（暗色+橙色高亮）。" + trim)]
 
-def product_prompts(video, title, hook):
+def product_prompts(video, title, hook, subtitle=""):
     elems = "、".join(video.get("key_elements", [])[:3])
-    trim = TRIM_RULE.format(title=title, hook=hook)
+    trim = copy_rule(title, hook, subtitle)
     common = (f"纯深色影棚背景（无赛博朋克霓虹、无AI节点网、无代码终端），一件干净3D影棚实拍主体（{elems}），"
               f"金属玻璃质感+轮廓光+轻微悬浮投影，占画面45-60%，冷色高级配色（银/香槟金/紫/白）。看起来像产品发布会主视觉。不要任何人脸。")
     return [("product_a", common + "主体居中。" + trim),
             ("product_b", common + "主体偏下、顶部放超大标题。" + trim),
             ("product_c", common + "主体偏右、左侧留白放标题。" + trim)]
 
-def hands_prompts(video, title, hook):
+def hands_prompts(video, title, hook, subtitle=""):
     elems = "、".join(video.get("key_elements", [])[:4])
     theme = video.get("content_summary", "")
-    trim = TRIM_RULE.format(title=title, hook=hook)
+    trim = copy_rule(title, hook, subtitle)
     common = (f"真实质感的实物操作/拆解封面，微距特写，专业工作台场景，戏剧性侧光与浅景深，细节锐利。"
               f"核心主题：{theme}。画面主体是手持专业工具操作实物（{elems}），突出'手+工具+实物'的操作瞬间，绝对不要人物面部、不要人脸。")
     return [("hands_a", common + "构图：俯拍工作台全景，手与工具正在操作，零件有序铺开、秩序感强，标题压顶。" + trim),
             ("hands_b", common + "构图：微距特写工具正在操作实物的关键瞬间，浅景深，标题在一侧留白。" + trim),
             ("hands_c", common + "构图：一只手举着操作中的实物朝向镜头，前后景层叠，氛围光。标题大字。" + trim)]
 
-def food_prompts(video, title, hook):
+def food_prompts(video, title, hook, subtitle=""):
     elems = "、".join(video.get("key_elements", [])[:4])
     theme = video.get("content_summary", "")
-    trim = TRIM_RULE.format(title=title, hook=hook)
+    trim = copy_rule(title, hook, subtitle)
     common = (f"电影感美食纪录片海报，纯黑/暗墨绿低调背景，食物特写微距，戏剧性低调布光、精致质感、油润光泽与热气。"
               f"核心主题：{theme}。画面主体是诱人的料理实拍（{elems}），占画面下部约50-65%，绝对不要任何人物、不要人脸。"
               f"标题用白色毛笔书法/做旧粉笔质感、力量感强。")
@@ -193,46 +292,136 @@ def food_prompts(video, title, hook):
             ("food_b", common + "构图：一道精致主菜特写，暗墨绿底，竖排白色书法巨标题在一侧、配红色方印。" + trim),
             ("food_c", common + "构图：高级俯拍摆盘，顶部白+红做旧大字标题，电影质感。" + trim)]
 
-def mood_prompts(video, title, hook):
+def mood_prompts(video, title, hook, subtitle=""):
     elems = "、".join(video.get("key_elements", [])[:4])
     theme = video.get("content_summary", "")
-    trim = TRIM_RULE.format(title=title, hook=hook)
+    trim = copy_rule(title, hook, subtitle)
     common = (f"暖调电影感胶片颗粒氛围海报，复古质感，柔和自然光、光晕与漏光，生活美学、温暖怀旧、高级感。"
               f"核心主题：{theme}。画面主体是诱人的实物/场景（{elems}），浅景深氛围、质感细腻，绝对不要人物面部、不要人脸。")
     return [("mood_a", common + "构图：主体居中特写 + 暖阳光晕 + 胶片漏光，标题压顶。" + trim),
             ("mood_b", common + "构图：多件主题物件桌面俯拍摆放，生活美学，标题在上方。" + trim),
             ("mood_c", common + "构图：单件主体被窗边柔光照亮、背景虚化暖调，标题大字在一侧。" + trim)]
 
-def _route_strat(strat, video, title, hook):
+def _route_strat(strat, video, title, hook, subtitle=""):
     if strat in ("hands_object", "hands"):
-        return ("hands_on_object", "text2image", hands_prompts(video, title, hook))
+        return ("hands_on_object", "text2image", hands_prompts(video, title, hook, subtitle))
     if strat in ("food_documentary", "food"):
-        return ("food_documentary", "text2image", food_prompts(video, title, hook))
+        return ("food_documentary", "text2image", food_prompts(video, title, hook, subtitle))
     if strat in ("lifestyle_mood", "mood"):
-        return ("lifestyle_mood", "text2image", mood_prompts(video, title, hook))
+        return ("lifestyle_mood", "text2image", mood_prompts(video, title, hook, subtitle))
     if strat in ("product", "interface"):
-        return ("product_studio", "text2image", product_prompts(video, title, hook))
-    return ("symbolic_no_person", "text2image", symbolic_prompts(video, title, hook))
+        return ("product_studio", "text2image", product_prompts(video, title, hook, subtitle))
+    return ("symbolic_no_person", "text2image", symbolic_prompts(video, title, hook, subtitle))
 
-def route(video, title, hook, person_mode="auto"):
+def route(video, title, hook, subtitle="", person_mode="auto"):
     strat = video["subject_strategy"]
     has_real = bool(video.get("has_real_person"))
-    GATE_STRATS = {"real_person_talking_head"}
-    if has_real and person_mode == "auto" and strat in GATE_STRATS:
+    # The user must decide whether to use a visible presenter even when the
+    # recommended cover subject is an object, a product, or a symbolic scene.
+    if has_real and person_mode == "auto":
         return ("NEED_PERSON_DECISION", None, [])
     if person_mode in ("uploaded-photo", "frame-cutout"):
-        return ("style_repaint", "image2image", style_repaint_prompts(video, title, hook))
+        return ("style_repaint", "image2image", style_repaint_prompts(video, title, hook, subtitle))
     if person_mode == "no-person" and strat in GATE_STRATS:
-        return _route_strat(video.get("no_person_fallback", "symbolic"), video, title, hook)
-    return _route_strat(strat, video, title, hook)
+        return _route_strat(video.get("no_person_fallback", "symbolic"), video, title, hook, subtitle)
+    return _route_strat(strat, video, title, hook, subtitle)
 
-# ---------------- 阶段3：即梦出图（超采样） ----------------
+# ---------------- 阶段3：出图/导出生图请求（超采样） ----------------
 def dreamina(args):
     r = subprocess.run([DREAMINA] + args, capture_output=True, text=True)
     try: return json.loads(r.stdout)
     except Exception: return {"_raw": r.stdout[:300]}
 
-def generate(api, prompts, portrait, out, samples=1, ratio="3:4"):
+def codex_prompt(api, prompt, portrait="", style_references=None, ratio="3:4"):
+    style_references = style_references or []
+    size_hint = "竖版 3:4" if ratio == "3:4" else "横版 4:3"
+    if ratio == "3:4":
+        ratio_guard = (
+            "【比例硬约束】最终图片文件本身必须是 3:4 竖版封面构图（宽:高=3:4）。"
+            "不要 9:16、不要 2:3、不要长条海报、不要留白边/黑边/侧边栏/上下边框；"
+            "请从一开始就按 3:4 画布重新排版，标题、人物、主体都在 3:4 安全区内。"
+        )
+    else:
+        ratio_guard = (
+            "【比例硬约束】最终图片文件本身必须是 4:3 横版封面构图（宽:高=4:3）。"
+            "不要 16:9、不要 3:2、不要宽屏视频帧、不要留白边/黑边；"
+            "请从一开始就按 4:3 画布重新排版，标题和主体都在 4:3 安全区内。"
+        )
+    parts = [
+        f"生成一张{size_hint}短视频封面。",
+        ratio_guard,
+        "必须直接在画面中生成中文标题文字，不要留空给后期排版。",
+        "不要水印、署名、平台 logo、二维码或未提供的额外文字。",
+        prompt,
+    ]
+    role_lines = []
+    image_index = 1
+    if api == "image2image":
+        parts.insert(
+            1,
+            "这是真人人像重绘任务：使用用户提供或视频抽帧得到的人像作为唯一人物身份参考，保持神似，不编造陌生人脸。",
+        )
+        if portrait:
+            role_lines.append(f"Image {image_index}：identity_reference，只用于锁定人物身份、五官、发型和服装。")
+            image_index += 1
+    for _ in style_references:
+        role_lines.append(
+            f"Image {image_index}：style_reference，只学习层级、构图、字体、材质、配色和信息密度；"
+            "绝不复制其中的文字、人脸、事实、笔记内容、UI 文案、logo 或具体主体。"
+        )
+        image_index += 1
+    if role_lines:
+        parts.insert(2 if api == "image2image" else 1, "【输入图片角色】\n" + "\n".join(role_lines))
+    return "\n".join(parts)
+
+def export_codex_requests(api, prompts, portrait, style_references, style_profile_id,
+                          out, samples=1, ratio="3:4"):
+    os.makedirs(out, exist_ok=True)
+    requests = []
+    reference_images = []
+    reference_roles = []
+    if api == "image2image" and portrait:
+        reference_images.append(os.path.abspath(os.path.expanduser(portrait)))
+        reference_roles.append("identity_reference")
+    for ref in style_references:
+        reference_images.append(ref)
+        reference_roles.append("style_reference")
+    for name, p in prompts:
+        for s in range(samples):
+            nm = name if samples == 1 else f"{name}_s{s+1}"
+            prompt = codex_prompt(
+                api,
+                p,
+                portrait=portrait,
+                style_references=style_references,
+                ratio=ratio,
+            )
+            txt_path = os.path.join(out, f"{nm}.prompt.txt")
+            with open(txt_path, "w", encoding="utf-8") as f:
+                f.write(prompt)
+            requests.append({
+                "name": nm,
+                "api": api,
+                "ratio": ratio,
+                "portrait": portrait if api == "image2image" else "",
+                "style_profile": style_profile_id,
+                "style_references": style_references,
+                "reference_images": reference_images,
+                "reference_roles": reference_roles,
+                "prompt_file": txt_path,
+                "prompt": prompt,
+                "status": "needs_codex_image_generation",
+                "expected_output": os.path.join(out, f"{nm}.png"),
+            })
+            print(f"  {nm} -> Codex prompt exported: {txt_path}")
+    manifest = os.path.join(out, "codex_imagegen_requests.json")
+    with open(manifest, "w", encoding="utf-8") as f:
+        json.dump(requests, f, ensure_ascii=False, indent=2)
+    print(f"\n  Codex 生图请求清单：{manifest}")
+    print("  下一步：按清单里的 reference_images 原顺序传给 image_gen(referenced_image_paths=...)，再读图筛选。")
+    return requests
+
+def generate_dreamina(api, prompts, portrait, out, samples=1, ratio="3:4"):
     os.makedirs(out, exist_ok=True)
     jobs = []
     for name, p in prompts:
@@ -273,25 +462,31 @@ def main():
     ap.add_argument("--portrait", default="")
     ap.add_argument("--title", default="")
     ap.add_argument("--hook", default="")
+    ap.add_argument("--subtitle", default="", help="可选二级价值承诺；只有明确提供时才进入画面")
     ap.add_argument("--person-mode", default="auto", choices=["auto", "uploaded-photo", "frame-cutout", "no-person"])
     ap.add_argument("--samples", type=int, default=2, help="每个提示词出几张(超采样，默认2→共6张供筛选)")
-    ap.add_argument("--ratio", default="3:4", help="3:4 竖版(默认) / 4:3 横版(同配方直生，自动追加横版构图指令)")
+    ap.add_argument("--ratio", default="3:4", choices=["3:4", "4:3"], help="3:4 竖版(默认) / 4:3 横版")
+    ap.add_argument("--engine", default="codex", choices=["codex", "dreamina"], help="生图引擎：codex 导出生图请求供 Codex image_gen 使用；dreamina 调用本地即梦 CLI")
     ap.add_argument("--tags", default=DEFAULT_TAGS)
+    ap.add_argument("--style-profile", default="auto", help="auto/none/风格族 id；auto 读取 analysis.selected_style_profile")
+    ap.add_argument("--style-reference", action="append", default=[], help="额外风格参考图，可重复；Codex/Image 2 路线使用")
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--out", default="")
     a = ap.parse_args()
     video = json.load(open(a.analysis, encoding="utf-8"))
     title = a.title or video.get("name", "标题")
     hook = a.hook or video.get("hook_summary", "")
+    profile, style_references = resolve_style_context(video, a.style_profile, a.ratio, a.style_reference)
+    profile_id = profile.get("id", "") if profile else ""
     print(f"\n=== 视频：{video.get('name')} [{video.get('vertical')} · {video['subject_strategy']}] ===")
-    print(f"标题：「{title}」+「{hook}」  有真人={bool(video.get('has_real_person'))}  人像模式={a.person_mode}  超采样×{a.samples}")
+    print(f"标题：「{title}」+「{hook}」  副标题：「{a.subtitle or '无'}」  有真人={bool(video.get('has_real_person'))}  人像模式={a.person_mode}  超采样×{a.samples}")
 
     print("\n--- 阶段1 匹配校准（案例库仅校准配方方向，不垫图）---")
     for c in match(video, a.tags):
         print(f"  ✓ {c['id']} 分{c['score']} [{c['person']}/{c['subject']}] {c['note']} — {'；'.join(c['reasons'])}")
 
     print("\n--- 阶段2 配方路由 ---")
-    mode, api, prompts = route(video, title, hook, a.person_mode)
+    mode, api, prompts = route(video, title, hook, a.subtitle, a.person_mode)
     if mode == "NEED_PERSON_DECISION":
         pfq = video.get("portrait_frame_quality", "good")
         print("  ⛔ 检测到真人口播 → 先问用户：封面要不要放人像？")
@@ -302,7 +497,21 @@ def main():
             print("     （视频里人像占比小/低清(如画中画小窗)，取帧效果必差 → 不提供取帧选项，请引导用户上传照片）")
         print("     ③ 不放人像 → --person-mode no-person（走 no_person_fallback 无人配方）")
         return
-    print(f"  选定模式：{mode}  (即梦 {api} · {a.ratio})")
+    print(f"  选定模式：{mode}  ({a.engine} {api} · {a.ratio})")
+    if profile:
+        print(f"  风格族：{profile['id']} / {profile.get('name', '')}")
+    for ref in style_references:
+        print(f"  风格参考：{ref}")
+    if a.engine == "dreamina" and style_references:
+        print("  ⚠ Dreamina fallback 不传风格参考图，只保留风格族文字规则。")
+        style_references = []
+    owned_prompts = profile_owned_prompts(profile, video, title, hook, a.subtitle, a.ratio, api)
+    if owned_prompts:
+        prompts = owned_prompts
+    else:
+        profile_tail = style_profile_directive(profile, a.ratio)
+        if profile_tail:
+            prompts = [(n, p + "\n" + profile_tail) for n, p in prompts]
     # 横版：同配方直生 4:3，追加横版构图指令（不要拿 3:4 成品改造，会劈成左字右图）
     if a.ratio != "3:4":
         H = ("【横版构图】画面为 4:3 横版：主体放中部或右侧约占一半，标题横排在顶部或左侧留白区、依然超大醒目，"
@@ -315,12 +524,28 @@ def main():
     if api == "image2image" and not a.portrait:
         print("\n⚠️ 该模式需要 --portrait 人像图，中止。"); return
     out = a.out or os.path.join(os.path.dirname(os.path.abspath(a.analysis)), "covers")
-    print(f"\n--- 阶段3 出图（{len(prompts)}款 × {a.samples}张 · {a.ratio}）→ {out} ---")
-    jobs = generate(api, prompts, a.portrait, out, a.samples, a.ratio)
+    print(f"\n--- 阶段3 出图/导出（{len(prompts)}款 × {a.samples}张 · {a.ratio} · {a.engine}）→ {out} ---")
+    if a.engine == "codex":
+        jobs = export_codex_requests(
+            api,
+            prompts,
+            a.portrait,
+            style_references,
+            profile_id,
+            out,
+            a.samples,
+            a.ratio,
+        )
+    else:
+        jobs = generate_dreamina(api, prompts, a.portrait, out, a.samples, a.ratio)
     ok = [j for j in jobs if j.get("file")]
     print(f"\n--- 阶段4 交给 Claude 读图筛选 ---")
-    print(f"  本轮出图 {len(ok)}/{len(jobs)} 张 → {out}")
-    print("  Claude 必须逐张 Read 并按 SKILL.md 的【验收清单】筛选，只交付达标的 3 张。")
+    if a.engine == "codex":
+        print(f"  已导出 {len(jobs)} 条 Codex image_gen 请求 → {out}")
+        print("  Codex 必须逐条调用 image_gen，拿到图片后再按 SKILL.md 的【验收清单】筛选，只交付达标的 3 张。")
+    else:
+        print(f"  本轮出图 {len(ok)}/{len(jobs)} 张 → {out}")
+        print("  Claude/Codex 必须逐张 Read 并按 SKILL.md 的【验收清单】筛选，只交付达标的 3 张。")
 
 if __name__ == "__main__":
     main()

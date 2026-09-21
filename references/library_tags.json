@@ -1,7 +1,7 @@
 {
   "_meta": {
     "desc": "案例库竖封面标签。person 字段=匹配硬规则关键：real_face=真人IP封面(可识别真人脸); hands=仅手; silhouette=剪影; illustration=插画人物(非真实照片); none=无人。subject∈{真人,实物,界面图示,场景,插画}。 新增 topic 话题标签(用于同垂类话题精排)。 新增 topic 话题标签(用于同垂类话题精排)。",
-    "root": "/path/to/user/Downloads/优质案例",
+    "root": "<your-case-library>",
     "count": 36
   },
   "科普": [

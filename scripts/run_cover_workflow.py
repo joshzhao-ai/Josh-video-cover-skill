@@ -13,7 +13,6 @@ from PIL import Image, ImageDraw
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 DEFAULT_OUTPUT_ROOT = Path.home() / "Desktop" / "video-covers"
-DEFAULT_LAYOUT_REFERENCE = Path.home() / "Desktop" / "OpenClaw封面_4比3 1.png"
 VARIANTS = ("info-heavy", "visual-heavy", "balanced")
 STOP_STAGES = ("frames", "analysis", "gate", "prompts", "covers", "review", "landscape", "done")
 
@@ -299,7 +298,7 @@ def extra_from_retry(report):
 
 
 def generate_landscape(args, workdir, title, subtitle, cover, analysis, person_choice, attempt, retry_report=None):
-    layout_reference = Path(args.layout_reference).expanduser().resolve() if args.layout_reference else DEFAULT_LAYOUT_REFERENCE
+    layout_reference = Path(args.layout_reference).expanduser().resolve() if args.layout_reference else None
     output_dir = workdir / "landscape-4x3"
     output_dir.mkdir(parents=True, exist_ok=True)
     if attempt == 0:
@@ -337,7 +336,7 @@ def generate_landscape(args, workdir, title, subtitle, cover, analysis, person_c
         "--extra",
         "主标题必须巨大清晰但留安全边距；副标题作为清晰横向标签。" + extra_from_retry(retry_report),
     ]
-    if layout_reference.exists():
+    if layout_reference and layout_reference.exists():
         command.extend(["--layout-reference", layout_reference])
     run_cmd(command)
     if attempt > 0:
