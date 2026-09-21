@@ -1,7 +1,7 @@
 <h1 align="center">Josh Video Cover Skill</h1>
 
 <p align="center"><b>让视频的亮点，在第一眼被看见。</b></p>
-<p align="center">把爆款视频背后的封面经验，装进你的 AI Agent。<br>一段视频，三条封面创意，横竖两套成片。</p>
+<p align="center">把爆款视频背后的封面经验，装进你的 AI Agent。</p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Codex-GPT%20Image%202-10a37f" alt="Codex / GPT Image 2">
@@ -31,10 +31,10 @@
     <td width="25%"><a href="assets/published/claude-vs-codex-3x4.png"><img src="assets/published/claude-vs-codex-3x4.png" alt="实际发布封面：Claude Code vs Codex"></a></td>
   </tr>
   <tr>
-    <td align="center"><b>Codex 官方分享</b><br>99.1 万播放<br><b>12.43%</b> 封面点击率</td>
-    <td align="center"><b>Kimi K3 真的强！</b><br>1.2 万播放<br><b>49.78%</b> 封面点击率</td>
-    <td align="center"><b>Claude 杀青了</b><br>1.4 万播放<br><b>32.8%</b> 封面点击率</td>
-    <td align="center"><b>Claude Code vs Codex</b><br>42.8 万播放<br><b>12.94%</b> 封面点击率</td>
+    <td align="center"><b>Codex 官方分享</b><br>99.1 万播放<br><sub>封面点击率</sub><br><b>12.43%</b></td>
+    <td align="center"><b>Kimi K3</b><br>1.2 万播放<br><sub>封面点击率</sub><br><b>49.78%</b></td>
+    <td align="center"><b>Claude 杀青了</b><br>1.4 万播放<br><sub>封面点击率</sub><br><b>32.8%</b></td>
+    <td align="center"><b>Claude vs Codex</b><br>42.8 万播放<br><sub>封面点击率</sub><br><b>12.94%</b></td>
   </tr>
 </table>
 
@@ -63,217 +63,102 @@
 
 <sub>横条从抖音后台截图原样裁切，点击可看完整截图。以上为精选案例的截图时点成绩；播放表现由内容、选题、封面与分发共同影响。[查看来源与统计口径](docs/RESULTS.md)。</sub>
 
-## 把做内容的功夫，也体现在封面上
+## 从内容到封面，把经验变成工作流
 
-封面是观众决定要不要点开的第一眼。这套 Skill 把标题策划、视觉设计和成片检查串在一起，让你把更多精力留给内容。
+我是 Josh。这套 Skill 来自我持续制作、发布视频的封面实践，现在把它交给你的 Agent：
 
-> 我是 Josh。我把持续制作、发布视频时积累的封面经验整理成了这套 Skill：从内容里找点击理由，把人物与产品放进合适的画面，再延展成风格统一的横竖版。现在开源这套工作流，你也可以带着自己的视频来试。
-
-| 你想改善的事 | Skill 怎么帮你 |
-| --- | --- |
-| **封面质量** | 根据视频题材安排人物、产品、字体和光影；同时看大图质感与小图辨识度。 |
-| **制作效率** | 从视频分析、标题候选到三条视觉路线，再到横版延展，由 Agent 连续完成；你只需做关键选择。 |
-| **点击吸引力** | 从视频中找出观众关心的问题、收益或结果，变成一眼能读懂的标题与主视觉。 |
-| **系列一致性** | 用人像参考保留创作者身份；选定方向后，横竖版延续同一套文案、配色、字体与主题元素。 |
-
-**想做出下一条爆款，先把值得点击的理由放到封面上。**
+- **质量：** 按题材设计字体、人物、产品与光影，同时检查大图质感和小图辨识度。
+- **效率：** 视频分析、标题策划、三条创意路线、横版延展，一次对话串起来。
+- **点击吸引力：** 把视频里的问题、收益或结果，变成一眼读懂的标题与主视觉。
+- **系列一致性：** 横竖版沿用选中方向的文案、人像、配色和字体。
 
 ## 快速开始
 
-**把下面这段话发给你的 AI Agent。** Codex、Claude Code 等能读取文件、执行命令的环境，都可以先从安装与能力检查开始。
+**① 安装：** 把这句话发给 Codex、Claude Code 等 AI Agent。
 
 ```text
-帮我安装视频封面 Skill：
-https://github.com/joshzhao-ai/Josh-video-cover-skill
-使用 agent/showcase-v2 分支，先阅读 SKILL.md，
-安装到当前 Agent 的 skills 目录，技能名保留 video-cover-generator。
-检查 Python 依赖、ffmpeg、ffprobe，以及可用的图像生成工具。
-Codex 可使用 image_gen；其他环境请检查是否已配置 Dreamina CLI。
-如已安装，保留本地修改后再更新；如缺少能力，请告诉我具体缺什么。
+帮我安装这个视频封面 Skill，并检查运行依赖：
+https://github.com/joshzhao-ai/Josh-video-cover-skill/tree/agent/showcase-v2
 ```
 
-安装和生图配置完成后，新开一个对话，附上本地视频，说：
+**② 使用：** 安装完成后，新开对话，附上视频，说「**给这个视频制作封面**」。
 
-```text
-给这个视频制作封面
-```
-
-你负责选择标题、人像和喜欢的方向；AI 负责分析视频、设计候选、检查画面和制作横竖版。无需自己编写生图提示词。
-
-也可以带着明确需求开始：
-
-```text
-给这个产品测评视频做封面，突出视频里最值得买的那个理由。
-用即梦给这个视频制作封面，使用我上传的人像。
-我选第 3 张，请延续它的字体、配色和人物，继续做横版。
-```
-
-豆包工作等国内 Agent，以及自建工作流，也可以作为接入方向；需要适配视频读取、脚本执行和生图工具，当前尚未完成这些环境的端到端验证。[查看平台条件与手动安装](#安装与运行环境)。
+[安装指南与平台支持](docs/INSTALL.md) · [常见问题](#常见问题)
 
 ## 同一条视频，不同的生成方式
 
-Skill 把标题、主体、构图、字体、配色与题材经验组织起来，再交给图像模型执行。下面用科技、美食、摄影三组案例，展示不同生成方式的实际结果。
+**5 类题材，15 张封面，一起看。** 每列是同一视频主题，每行是一种生成方式。点击单图放大。
 
-### 科技 · 从功能界面，到创作者的主题表达
+<table>
+  <tr><th width="10%">生成方式</th><th width="18%">摄影</th><th width="18%">教育</th><th width="18%">科技</th><th width="18%">游戏</th><th width="18%">美食</th></tr>
+  <tr><td align="center">Seedream<br><sub>5.0 Lite</sub><br>直出</td><td><a href="assets/comparison/camera-direct.png"><img src="assets/comparison/camera-direct.png" width="150" alt="摄影：Seedream 直出"></a></td><td><a href="assets/comparison/education-direct.png"><img src="assets/comparison/education-direct.png" width="150" alt="教育：Seedream 直出"></a></td><td><a href="assets/comparison/codex-direct.jpg"><img src="assets/comparison/codex-direct.jpg" width="150" alt="科技：Seedream 直出"></a></td><td><a href="assets/comparison/game-direct.png"><img src="assets/comparison/game-direct.png" width="150" alt="游戏：Seedream 直出"></a></td><td><a href="assets/comparison/food-direct.jpg"><img src="assets/comparison/food-direct.jpg" width="150" alt="美食：Seedream 直出"></a></td></tr>
+  <tr><td align="center">Seedream<br><sub>5.0 Lite</sub><br><b>+ Skill</b></td><td><a href="assets/comparison/camera-seedream-skill.png"><img src="assets/comparison/camera-seedream-skill.png" width="150" alt="摄影：Seedream 加 Skill"></a></td><td><a href="assets/comparison/education-seedream-skill.png"><img src="assets/comparison/education-seedream-skill.png" width="150" alt="教育：Seedream 加 Skill"></a></td><td><a href="assets/comparison/codex-seedream-skill.jpg"><img src="assets/comparison/codex-seedream-skill.jpg" width="150" alt="科技：Seedream 加 Skill"></a></td><td><a href="assets/comparison/game-seedream-skill.png"><img src="assets/comparison/game-seedream-skill.png" width="150" alt="游戏：Seedream 加 Skill"></a></td><td><a href="assets/comparison/food-seedream-skill.png"><img src="assets/comparison/food-seedream-skill.png" width="150" alt="美食：Seedream 加 Skill"></a></td></tr>
+  <tr><td align="center">GPT<br>Image 2<br><b>+ Skill</b></td><td><a href="assets/comparison/camera-gpt-skill.png"><img src="assets/comparison/camera-gpt-skill.png" width="150" alt="摄影：GPT Image 2 加 Skill"></a></td><td><a href="assets/comparison/education-gpt-skill.png"><img src="assets/comparison/education-gpt-skill.png" width="150" alt="教育：GPT Image 2 加 Skill"></a></td><td><a href="assets/published/codex-official-3x4.png"><img src="assets/published/codex-official-3x4.png" width="150" alt="科技：GPT Image 2 加 Skill"></a></td><td><a href="assets/comparison/game-gpt-skill.png"><img src="assets/comparison/game-gpt-skill.png" width="150" alt="游戏：GPT Image 2 加 Skill"></a></td><td><a href="assets/comparison/food-gpt-skill.png"><img src="assets/comparison/food-gpt-skill.png" width="150" alt="美食：GPT Image 2 加 Skill"></a></td></tr>
+</table>
 
-| Seedream 5.0 Lite 直出 | Seedream 5.0 Lite + Skill | GPT Image 2 + Skill |
-|:---:|:---:|:---:|
-| <img src="assets/comparison/codex-direct.jpg" width="240" alt="Codex 视频：Seedream 直接生成的界面式封面"> | <img src="assets/comparison/codex-seedream-skill.jpg" width="240" alt="Codex 视频：Seedream 配合 Skill 的人物动作与标题设计"> | <img src="assets/published/codex-official-3x4.png" width="240" alt="Codex 视频：GPT Image 2 配合 Skill 的真人科技封面"> |
+<sub>来自作者的同视频创作对照，模型名沿用原始标注；文案、素材与构图存在差异。用于观察设计表达，不作为严格控制变量的模型排名。</sub>
 
-同一主题可以组织成不同的视觉表达：人物与工具互动，或以大标题、创作者身份和内容线索建立层次。
+[看完整 40 张横竖版对照](assets/comparison/original-five-categories.png) · [素材来源与对照说明](docs/COMPARISON.md)
 
-### 美食 · 让食物质感与标题一起传达主题
+## 让不同内容，有自己的样子
 
-| Seedream 5.0 Lite 直出 | Seedream 5.0 Lite + Skill | GPT Image 2 + Skill |
-|:---:|:---:|:---:|
-| <img src="assets/comparison/food-direct.jpg" width="240" alt="日料视频：Seedream 直接生成的食物与标题"> | <img src="assets/comparison/food-seedream-skill.png" width="240" alt="日料视频：Seedream 配合 Skill 的暗底食物特写与书法标题"> | <img src="assets/comparison/food-gpt-skill.png" width="240" alt="日料视频：GPT Image 2 配合 Skill 的高对比美食封面"> |
+品牌互动、知识讲解、摄影、美食、游戏，都可以找到适合内容的表达。下面是 8 种实际创作方向。
 
-用食物的色泽、光影和摆放关系吸引目光，再用标题提出视频要回答的问题。
+<table>
+  <tr><td width="25%" align="center"><b>品牌互动</b><br><sub>人物 × 产品</sub><br><a href="assets/published/kimi-k3-3x4.png"><img src="assets/published/kimi-k3-3x4.png" width="180" alt="品牌互动封面案例"></a></td><td width="25%" align="center"><b>戏剧张力</b><br><sub>橙黑 × 大字</sub><br><a href="assets/published/claude-wrap-3x4.png"><img src="assets/published/claude-wrap-3x4.png" width="180" alt="戏剧张力封面案例"></a></td><td width="25%" align="center"><b>知识故事</b><br><sub>黑金 × 方法证据</sub><br><a href="assets/showcase/skill-image2-3x4.jpg"><img src="assets/showcase/skill-image2-3x4.jpg" width="180" alt="知识故事封面案例"></a></td><td width="25%" align="center"><b>摄影测评</b><br><sub>复古 × 器材样片</sub><br><a href="assets/comparison/camera-gpt-skill.png"><img src="assets/comparison/camera-gpt-skill.png" width="180" alt="摄影测评封面案例"></a></td></tr>
+  <tr><td width="25%" align="center"><b>设计教程</b><br><sub>拼贴 × 字体层次</sub><br><a href="assets/comparison/education-gpt-skill.png"><img src="assets/comparison/education-gpt-skill.png" width="180" alt="设计教程封面案例"></a></td><td width="25%" align="center"><b>游戏攻略</b><br><sub>角色 × 动态光效</sub><br><a href="assets/comparison/game-gpt-skill.png"><img src="assets/comparison/game-gpt-skill.png" width="180" alt="游戏攻略封面案例"></a></td><td width="25%" align="center"><b>美食叙事</b><br><sub>食物 × 电影布光</sub><br><a href="assets/comparison/food-gpt-skill.png"><img src="assets/comparison/food-gpt-skill.png" width="180" alt="美食叙事封面案例"></a></td><td width="25%" align="center"><b>工具成果</b><br><sub>动作 × 结果展示</sub><br><a href="assets/showcase/ai-ppt-dreamina-3x4.jpg"><img src="assets/showcase/ai-ppt-dreamina-3x4.jpg" width="180" alt="工具成果封面案例"></a></td></tr>
+</table>
 
-### 摄影 · 器材、人物与样片，各有位置
-
-| Seedream 5.0 Lite 直出 | Seedream 5.0 Lite + Skill | GPT Image 2 + Skill |
-|:---:|:---:|:---:|
-| <img src="assets/comparison/camera-direct.png" width="240" alt="相机视频：Seedream 直接生成的复古相机封面"> | <img src="assets/comparison/camera-seedream-skill.png" width="240" alt="相机视频：Seedream 配合 Skill 的人物与复古器材设计"> | <img src="assets/comparison/camera-gpt-skill.png" width="240" alt="相机视频：GPT Image 2 配合 Skill 的人物、器材与样片排版"> |
-
-根据内容，把器材外观、创作者与拍摄结果组织在一张封面里；字体和色彩也跟随摄影题材变化。
-
-<sub>以上为作者提供的同视频效果对照，模型名称沿用原始对照图标注。文案、参考素材与构图存在差异，用于展示创作结果，不是严格控制变量的模型排名。[查看来源与完整五类对照](docs/COMPARISON.md)。</sub>
+[查看双模型作品集](docs/GALLERY.md)
 
 ## 同一个创意，横竖都成立
 
-以首屏的 **Codex 官方分享** 为例：竖版让标题与人物上下展开，横版重新安排为左右关系，同时延续身份、文案、配色与字体。
+选定竖版后，延续它的文案、人像、配色和字体，重新设计横版的构图与空间。
 
-| 3:4 竖版 | 4:3 横版 |
-|:---:|:---:|
-| <img src="assets/published/codex-official-3x4.png" width="280" alt="Codex 官方分享竖版：上方标题，下方人物"> | <img src="assets/published/codex-official-4x3.png" width="490" alt="Codex 官方分享横版：左侧标题，右侧人物"> |
-
-选定竖版后，Skill 会以该方向为依据原生生成横版，重新设计断行、景别和空间。[查看更多双尺寸作品](docs/GALLERY.md)。
+<table>
+  <tr><th colspan="2">Codex 官方分享</th><th colspan="2">Claude 杀青了</th></tr>
+  <tr>
+    <td width="18%"><a href="assets/published/codex-official-3x4.png"><img src="assets/published/codex-official-3x4.png" alt="Codex 3:4 竖版"></a></td>
+    <td width="32%"><a href="assets/published/codex-official-4x3.png"><img src="assets/published/codex-official-4x3.png" alt="Codex 4:3 横版"></a></td>
+    <td width="18%"><a href="assets/published/claude-wrap-3x4.png"><img src="assets/published/claude-wrap-3x4.png" alt="Claude 3:4 竖版"></a></td>
+    <td width="32%"><a href="assets/published/claude-wrap-4x3.png"><img src="assets/published/claude-wrap-4x3.png" alt="Claude 4:3 横版"></a></td>
+  </tr>
+  <tr><td align="center">3:4 竖版</td><td align="center">4:3 横版</td><td align="center">3:4 竖版</td><td align="center">4:3 横版</td></tr>
+</table>
 
 ## 像和设计师一起做封面
 
+**你做关键选择，Agent 负责分析、设计、检查与交付。**
+
+```mermaid
+flowchart LR
+    A[上传视频] --> B[分析内容<br/>提炼亮点]
+    B --> C[你选标题<br/>与人像方式]
+    C --> D[生成并检查<br/>3 张竖版候选]
+    D --> E[你选喜欢的方向]
+    E --> F[生成并检查<br/>2 张横版候选]
+    F --> G[你选定成片<br/>交付横竖封面]
+    classDef user fill:#fff4d6,stroke:#b8871b,color:#302716
+    classDef agent fill:#eaf2ff,stroke:#4c77b8,color:#172e50
+    class A,C,E,G user
+    class B,D,F agent
+```
+
+遇到错字、人物偏差或构图问题，只重做对应候选。全过程保留你的标题、人像与方向选择。
+
+<details>
+<summary>看一段实际使用方式</summary>
+
 ```text
-你：给这个视频制作封面。 [附上视频]
-
-AI：查看关键帧，提炼主题、亮点与内容证据。
-    给出标题候选，同时询问使用上传人像、视频取帧，还是不放人像。
-
-你：1B。 [附上人像照片，选择标题 B]
-
-AI：生成并检查 3 张不同方向的 3:4 封面，在对话中展示。
-
+你：给这个视频制作封面。[附视频]
+AI：分析视频，给出标题和人像选项。
+你：1B。[上传人像，选标题 B]
+AI：生成并检查 3 张不同方向的竖版。
 你：选第 3 张。
-
-AI：延续选中方向，生成并检查 2 张原生 4:3 横版候选，供你选择。
+AI：生成并检查 2 张延续该方向的横版。
+你：选第 1 张横版。
+AI：交付选定的横竖封面。
 ```
-
-**一次制作，获得标题方案、三条竖版创意路线，以及选中方向的横版延展。**
-
-### 你的内容，适合什么表达？
-
-| 视频题材 | 设计重点 |
-| --- | --- |
-| AI 工具、知识口播 | 主题与点击理由、创作者身份、工具或结果物 |
-| 数码、产品测评 | 产品外观、材质、使用动作与测评证据 |
-| 拆机、维修、实物操作 | 手、工具与实物的关系，操作细节 |
-| 美食、饮食文化 | 食物特写、光泽、热气与电影感布光 |
-| 医学、知识科普 | 主题符号与核心问题的视觉解释 |
-| 设计、排版教程 | 让字体、配色和版式本身成为示范 |
-| 摄影、生活记录 | 器材、样片、自然光与生活氛围 |
-
-### 支撑这些结果的四个环节
-
-- **从视频提炼标题。** 先看内容，再找主题与点击理由；数字、成绩和强结论需要内容依据。
-- **按题材设计候选。** 三条路线在构图、主视觉和表达方式上拉开差异；保留你对人像和方向的选择权。
-- **分别适配模型。** GPT Image 2 明确区分身份、内容和风格参考；Dreamina 使用短中文视觉配方，并探测实际可用版本。
-- **逐张检查成片。** 同时检查原图与缩略图，关注标题可读性、人物一致性、错字与肢体；失败路线定向重做。
-
-## 安装与运行环境
-
-当前 v2 位于 `agent/showcase-v2` 分支。Skill 由 Agent 执行；图像生成使用你已配置的模型账号与额度。
-
-| Agent / 环境 | 接入方式 | 当前条件 |
-| --- | --- | --- |
-| **Codex** | 安装到 `~/.codex/skills/video-cover-generator` | 已有本仓库作品案例；使用环境提供的 `image_gen`，或配置 Dreamina CLI。 |
-| **Claude Code** | 安装到 `~/.claude/skills/video-cover-generator` | 提供安装方式；需先配置 Dreamina CLI 并验证生图调用，完整流程待宿主实测。 |
-| **其他本地 Agent** | 安装到该 Agent 的技能目录，读取 `SKILL.md` | 需能查看图片、读写文件、执行 Python/FFmpeg，并调用已配置的生图工具；接入后需验证。 |
-| **豆包工作等国内 Agent / 工作流平台** | 按平台能力加载 Skill 或拆解为工作流步骤 | 待适配、待验证；需接通视频处理、确认交互、图像生成和成片检查。 |
-
-把 `SKILL.md` 粘贴进普通聊天框只能提供设计指导；完整出图流程还需要上述工具能力。
-
-<details>
-<summary><b>Codex 手动安装、Claude Code 配置与更新</b></summary>
-
-### Codex
-
-首次安装（目标目录应不存在）：
-
-```bash
-git clone --branch agent/showcase-v2 --single-branch \
-  https://github.com/joshzhao-ai/Josh-video-cover-skill.git \
-  ~/.codex/skills/video-cover-generator
-
-python3 -m pip install -r ~/.codex/skills/video-cover-generator/scripts/requirements.txt
-```
-
-安装 FFmpeg，macOS 可使用：
-
-```bash
-brew install ffmpeg
-```
-
-其他系统请安装对应的 FFmpeg，并确保终端能运行 `ffmpeg` 和 `ffprobe`。
-
-重新打开 Codex 任务，附上本地视频并说：
-
-```text
-给这个视频制作封面
-```
-
-环境具备 `image_gen` 时，按 Skill 默认路线调用。使用 Dreamina 路线时，可以说：
-
-```text
-用即梦给这个视频制作封面
-```
-
-<details>
-<summary><b>Claude Code 安装与 Dreamina 准备</b></summary>
-
-```bash
-git clone --branch agent/showcase-v2 --single-branch \
-  https://github.com/joshzhao-ai/Josh-video-cover-skill.git \
-  ~/.claude/skills/video-cover-generator
-
-python3 -m pip install -r ~/.claude/skills/video-cover-generator/scripts/requirements.txt
-```
-
-同样需要 FFmpeg。使用 Dreamina 路线前，请准备好你有权使用的 Dreamina CLI，完成登录，并验证当前环境能调用它。仓库不包含该 CLI 的安装包或模型账号。
-
-在 Skill 目录运行能力探测：
-
-```bash
-python3 scripts/detect_dreamina_capabilities.py --requested auto
-```
-
-</details>
-
-<details>
-<summary><b>已有安装如何更新</b></summary>
-
-先确认安装目录是本仓库的 Git 克隆，且没有需要保留的本地修改。以 Codex 为例：
-
-```bash
-cd ~/.codex/skills/video-cover-generator
-git status
-git fetch origin agent/showcase-v2
-git switch agent/showcase-v2
-git pull --ff-only origin agent/showcase-v2
-```
-
-若已有本地修改，先保存后再更新；如果原来是手动复制安装，请保留旧目录后按首次安装步骤操作。
-
-</details>
-
 
 </details>
 
@@ -308,6 +193,8 @@ git pull --ff-only origin agent/showcase-v2
 | [Dreamina 能力探测](scripts/detect_dreamina_capabilities.py) | 检测本机可用模型 |
 | [评测协议](EVALUATION.md) | 流程、画面与版本回归验收 |
 | [更新记录](CHANGELOG.md) | 版本变化 |
+| [安装指南](docs/INSTALL.md) | 平台条件、依赖与更新 |
+| [发布检查](docs/RELEASE_CHECK.md) | 本次验证范围与稳定性证据 |
 
 </details>
 

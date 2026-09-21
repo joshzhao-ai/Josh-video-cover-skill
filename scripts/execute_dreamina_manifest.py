@@ -5,6 +5,7 @@ import argparse
 import json
 import re
 import subprocess
+import tempfile
 import time
 from pathlib import Path
 
@@ -88,6 +89,9 @@ def submit_and_download(command, download_dir, timeout, interval):
     submit_id = extract_submit_id(submit_output)
     if not submit_id:
         raise RuntimeError("Dreamina submit did not return submit_id.\n" + submit_output.strip())
+    # Retries must never consume a file left by a previous submission.
+    Path(download_dir).mkdir(parents=True, exist_ok=True)
+    attempt_dir = Path(tempfile.mkdtemp(prefix="attempt-", dir=download_dir))
     started = time.time()
     last_output = submit_output
     while time.time() - started <= timeout:
@@ -98,7 +102,7 @@ def submit_and_download(command, download_dir, timeout, interval):
                 "--submit_id",
                 submit_id,
                 "--download_dir",
-                str(download_dir),
+                str(attempt_dir),
             ])
         except RuntimeError as exc:
             last_output = str(exc)
@@ -106,12 +110,12 @@ def submit_and_download(command, download_dir, timeout, interval):
                 raise
             time.sleep(interval)
             continue
-        files = media_files(download_dir)
-        if files:
-            return files[0]
         status = extract_status(last_output)
         if status == "fail":
             raise RuntimeError("Dreamina generation failed.\n" + last_output.strip())
+        files = media_files(attempt_dir)
+        if files:
+            return files[0]
         time.sleep(interval)
     raise RuntimeError(f"Dreamina generation timed out for submit_id={submit_id}.\n{last_output.strip()}")
 
