@@ -5,3 +5,6 @@ __pycache__/
 # Keep source boards and full dashboard captures out of distribution.
 /assets/comparison/original-five-categories.png
 /assets/evidence/douyin-*.png
+/assets/comparison/education-*.png
+/assets/comparison/game-*.png
+/references/video_cover_skill_*report*.md
