@@ -98,7 +98,7 @@ https://github.com/joshzhao-ai/Josh-video-cover-skill/tree/agent/showcase-v2
 
 <sub>来自作者的同视频创作对照，模型名沿用原始标注；文案、素材与构图存在差异。用于观察设计表达，不作为严格控制变量的模型排名。</sub>
 
-[看完整 40 张横竖版对照](assets/comparison/original-five-categories.png) · [素材来源与对照说明](docs/COMPARISON.md)
+[素材来源与对照说明](docs/COMPARISON.md)
 
 ## 让不同内容，有自己的样子
 
