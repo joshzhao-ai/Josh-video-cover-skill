@@ -2,7 +2,7 @@
 
 [返回项目首页](../README.md#快速开始)
 
-当前 v2 位于 `agent/showcase-v2` 分支。Skill 由 Agent 执行；图像生成使用你已配置的模型账号与额度。
+当前正式版为 **v2.0.0**，默认使用 `main` 分支。Skill 由 Agent 执行；图像生成使用你已配置的模型账号与额度。
 
 | Agent / 环境 | 接入方式 | 当前条件 |
 | --- | --- | --- |
@@ -20,7 +20,7 @@
 
 ```bash
 mkdir -p ~/.codex/skills
-git clone --branch agent/showcase-v2 --single-branch \
+git clone --branch main --single-branch \
   https://github.com/joshzhao-ai/Josh-video-cover-skill.git \
   ~/.codex/skills/video-cover-generator
 
@@ -51,7 +51,7 @@ brew install ffmpeg
 
 ```bash
 mkdir -p ~/.claude/skills
-git clone --branch agent/showcase-v2 --single-branch \
+git clone --branch main --single-branch \
   https://github.com/joshzhao-ai/Josh-video-cover-skill.git \
   ~/.claude/skills/video-cover-generator
 
@@ -70,14 +70,14 @@ python3 scripts/detect_dreamina_capabilities.py --requested auto
 
 ### 已有安装如何更新
 
-先确认安装目录是本仓库的 Git 克隆，且没有需要保留的本地修改。以 Codex 为例：
+以下适用于已从 `main` 安装的 Git 克隆。先确认没有需要保留的本地修改，以 Codex 为例：
 
 ```bash
 cd ~/.codex/skills/video-cover-generator
 git status
-git fetch origin agent/showcase-v2
-git switch agent/showcase-v2
-git pull --ff-only origin agent/showcase-v2
+git fetch origin main
+git switch main
+git pull --ff-only origin main
 ```
 
-若已有本地修改，先保存后再更新；如果原来是手动复制安装，请保留旧目录后按首次安装步骤操作。
+若已有本地修改，先保存后再更新。此前使用预览分支、手动复制安装，或更新时提示历史分叉的用户，请保留旧目录后按首次安装步骤重新克隆，不要把旧历史合并回新版。

@@ -78,7 +78,7 @@
 
 ```text
 帮我安装这个视频封面 Skill，并检查运行依赖：
-https://github.com/joshzhao-ai/Josh-video-cover-skill/tree/agent/showcase-v2
+https://github.com/joshzhao-ai/Josh-video-cover-skill
 ```
 
 **② 使用：** 安装完成后，新开对话，附上视频，说「**给这个视频制作封面**」。
