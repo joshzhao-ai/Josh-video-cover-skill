@@ -132,16 +132,14 @@ https://github.com/joshzhao-ai/Josh-video-cover-skill/tree/agent/showcase-v2
 
 ```mermaid
 flowchart LR
-    A[上传视频] --> B[分析内容<br/>提炼亮点]
-    B --> C[你选标题<br/>与人像方式]
-    C --> D[生成并检查<br/>3 张竖版候选]
-    D --> E[你选喜欢的方向]
-    E --> F[生成并检查<br/>2 张横版候选]
-    F --> G[你选定成片<br/>交付横竖封面]
+    A[上传视频<br/>Agent 分析亮点] --> B[你确认<br/>标题与人像]
+    B --> C[Agent 生成并检查<br/>3 张竖版]
+    C --> D[你选竖版方向<br/>Agent 续作 2 张横版]
+    D --> E[检查并选定<br/>交付横竖封面]
     classDef user fill:#fff4d6,stroke:#b8871b,color:#302716
     classDef agent fill:#eaf2ff,stroke:#4c77b8,color:#172e50
-    class A,C,E,G user
-    class B,D,F agent
+    class B,D,E user
+    class A,C agent
 ```
 
 遇到错字、人物偏差或构图问题，只重做对应候选。全过程保留你的标题、人像与方向选择。
