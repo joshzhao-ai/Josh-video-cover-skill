@@ -8,6 +8,14 @@
 |:---:|:---:|
 | <img src="../assets/published/codex-official-3x4.png" width="300" alt="Codex 官方分享实际发布竖版"> | <img src="../assets/published/codex-official-4x3.png" width="520" alt="Codex 官方分享同系列横版"> |
 
+## Claude 杀青了：同一主题的横竖延展
+
+| 3:4 竖版 | 4:3 横版 |
+|:---:|:---:|
+| <img src="../assets/published/claude-wrap-3x4.png" width="300" alt="Claude 杀青了实际发布竖版：橙色大字与前景品牌物"> | <img src="../assets/published/claude-wrap-4x3.png" width="520" alt="Claude 杀青了同系列横版：延续人物、文案和橙黑配色"> |
+
+竖版对应首页的 32.8% 封面点击率案例。横版延续人物、标题与橙黑色系，重新组织文字、面部和前景物体的空间；该数据不代表横版的发布表现。
+
 ## 更多双模型创作案例
 
 以下作品用于展示视觉设计和双尺寸能力，未将首页发布成绩归属于这些不同版本。

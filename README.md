@@ -1,11 +1,12 @@
 <h1 align="center">Josh Video Cover Skill</h1>
 
 <p align="center"><b>让视频的亮点，在第一眼被看见。</b></p>
-<p align="center">从视频理解到横竖版封面，把创作经验变成可执行的设计流程。</p>
+<p align="center">把爆款视频背后的封面经验，装进你的 AI Agent。<br>一段视频，三条封面创意，横竖两套成片。</p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Codex-GPT%20Image%202-10a37f" alt="Codex / GPT Image 2">
   <img src="https://img.shields.io/badge/Dreamina-Seedream-246bfd" alt="Dreamina / Seedream">
+  <img src="https://img.shields.io/badge/Agent-Codex%20%7C%20Claude%20Code-555" alt="Codex / Claude Code，生图能力按环境配置">
   <img src="https://img.shields.io/badge/Output-3%3A4%20%2B%204%3A3-f59e0b" alt="3:4 竖版与 4:3 横版">
 </p>
 
@@ -18,15 +19,15 @@
 
 ## 作品先说话
 
-**已用于 99.1 万播放的视频；精选案例封面点击率达 49.78%。**
+**99.1 万播放的视频，用的是这套 Skill 做的封面。**
 
-以下四个真实发布案例的封面，均由本 Skill 制作。
+下面四张都是使用本 Skill 制作、实际发布的封面。作品与成绩，一一对应。
 
 <table>
   <tr>
     <td width="25%"><a href="assets/published/codex-official-3x4.png"><img src="assets/published/codex-official-3x4.png" alt="实际发布封面：Codex 官方分享"></a></td>
     <td width="25%"><a href="assets/published/kimi-k3-3x4.png"><img src="assets/published/kimi-k3-3x4.png" alt="实际发布封面：Kimi K3 真的强，Josh 托起 Kimi 品牌物"></a></td>
-    <td width="25%" align="center" valign="middle"><b>Claude 杀青了</b><br><br><sub>待补发布原图</sub></td>
+    <td width="25%"><a href="assets/published/claude-wrap-3x4.png"><img src="assets/published/claude-wrap-3x4.png" alt="实际发布封面：Claude 杀青了，替代方案来了"></a></td>
     <td width="25%"><a href="assets/published/claude-vs-codex-3x4.png"><img src="assets/published/claude-vs-codex-3x4.png" alt="实际发布封面：Claude Code vs Codex"></a></td>
   </tr>
   <tr>
@@ -37,21 +38,61 @@
   </tr>
 </table>
 
-<sub>数据来自作者提供的抖音创作者后台截图，按截图显示值记录，非实时更新。为精选作品成绩，不代表平均效果或封面的独立增量贡献。[查看后台证据与统计口径](docs/RESULTS.md)。</sub>
+### 真实后台，直接看数据
+
+**Codex 官方分享 · 99.1 万播放 / 4.9 万收藏 / 5381 涨粉**
+
+[![Codex 官方分享的后台数据横条：99.1万播放、4.8万点赞、636评论、6658分享、4.9万收藏、12.43%封面点击率、5381吸粉量](assets/evidence/codex-metrics.png)](assets/evidence/douyin-codex.png)
+
+**Kimi K3 · 49.78% 封面点击率**
+
+[![Kimi K3 的后台数据横条：1.2万播放，49.78%封面点击率](assets/evidence/kimi-metrics.png)](assets/evidence/douyin-kimi-and-versus.png)
+
+<details>
+<summary>展开另外两张封面的后台数据</summary>
+
+**Claude 杀青了 · 32.8% 封面点击率**
+
+[![Claude 杀青了的后台数据横条：1.4万播放，32.8%封面点击率](assets/evidence/claude-metrics.png)](assets/evidence/douyin-claude.png)
+
+**Claude Code vs Codex · 42.8 万播放**
+
+[![Claude Code vs Codex 的后台数据横条：42.8万播放，12.94%封面点击率](assets/evidence/versus-metrics.png)](assets/evidence/douyin-kimi-and-versus.png)
+
+</details>
+
+<sub>横条从抖音后台截图原样裁切，点击可看完整截图。以上为精选案例的截图时点成绩；播放表现由内容、选题、封面与分发共同影响。[查看来源与统计口径](docs/RESULTS.md)。</sub>
+
+## 把做内容的功夫，也体现在封面上
+
+封面是观众决定要不要点开的第一眼。这套 Skill 把标题策划、视觉设计和成片检查串在一起，让你把更多精力留给内容。
+
+> 我是 Josh。我把持续制作、发布视频时积累的封面经验整理成了这套 Skill：从内容里找点击理由，把人物与产品放进合适的画面，再延展成风格统一的横竖版。现在开源这套工作流，你也可以带着自己的视频来试。
+
+| 你想改善的事 | Skill 怎么帮你 |
+| --- | --- |
+| **封面质量** | 根据视频题材安排人物、产品、字体和光影；同时看大图质感与小图辨识度。 |
+| **制作效率** | 从视频分析、标题候选到三条视觉路线，再到横版延展，由 Agent 连续完成；你只需做关键选择。 |
+| **点击吸引力** | 从视频中找出观众关心的问题、收益或结果，变成一眼能读懂的标题与主视觉。 |
+| **系列一致性** | 用人像参考保留创作者身份；选定方向后，横竖版延续同一套文案、配色、字体与主题元素。 |
+
+**想做出下一条爆款，先把值得点击的理由放到封面上。**
 
 ## 快速开始
 
-把下面这段话发给 Codex：
+**把下面这段话发给你的 AI Agent。** Codex、Claude Code 等能读取文件、执行命令的环境，都可以先从安装与能力检查开始。
 
 ```text
 帮我安装视频封面 Skill：
 https://github.com/joshzhao-ai/Josh-video-cover-skill
-使用 agent/showcase-v2 分支，安装到 ~/.codex/skills/video-cover-generator。
-检查 Python 依赖、ffmpeg、ffprobe 和图像生成工具是否可用。
-如果已有安装，先检查本地修改再更新。
+使用 agent/showcase-v2 分支，先阅读 SKILL.md，
+安装到当前 Agent 的 skills 目录，技能名保留 video-cover-generator。
+检查 Python 依赖、ffmpeg、ffprobe，以及可用的图像生成工具。
+Codex 可使用 image_gen；其他环境请检查是否已配置 Dreamina CLI。
+如已安装，保留本地修改后再更新；如缺少能力，请告诉我具体缺什么。
 ```
 
-安装完成后，打开新任务，附上本地视频，说：
+安装和生图配置完成后，新开一个对话，附上本地视频，说：
 
 ```text
 给这个视频制作封面
@@ -59,7 +100,15 @@ https://github.com/joshzhao-ai/Josh-video-cover-skill
 
 你负责选择标题、人像和喜欢的方向；AI 负责分析视频、设计候选、检查画面和制作横竖版。无需自己编写生图提示词。
 
-支持 Codex 的 `image_gen` 路线，以及已配置 Dreamina CLI 的 Agent 环境。[手动安装与依赖说明](#安装与运行环境)。
+也可以带着明确需求开始：
+
+```text
+给这个产品测评视频做封面，突出视频里最值得买的那个理由。
+用即梦给这个视频制作封面，使用我上传的人像。
+我选第 3 张，请延续它的字体、配色和人物，继续做横版。
+```
+
+豆包工作等国内 Agent，以及自建工作流，也可以作为接入方向；需要适配视频读取、脚本执行和生图工具，当前尚未完成这些环境的端到端验证。[查看平台条件与手动安装](#安装与运行环境)。
 
 ## 同一条视频，不同的生成方式
 
@@ -141,7 +190,16 @@ AI：延续选中方向，生成并检查 2 张原生 4:3 横版候选，供你�
 
 ## 安装与运行环境
 
-当前 v2 位于 `agent/showcase-v2` 分支。需要能读取本地视频、执行 Python/FFmpeg 并调用图像生成工具的 Agent；模型调用使用你自己的账号与可用额度。
+当前 v2 位于 `agent/showcase-v2` 分支。Skill 由 Agent 执行；图像生成使用你已配置的模型账号与额度。
+
+| Agent / 环境 | 接入方式 | 当前条件 |
+| --- | --- | --- |
+| **Codex** | 安装到 `~/.codex/skills/video-cover-generator` | 已有本仓库作品案例；使用环境提供的 `image_gen`，或配置 Dreamina CLI。 |
+| **Claude Code** | 安装到 `~/.claude/skills/video-cover-generator` | 提供安装方式；需先配置 Dreamina CLI 并验证生图调用，完整流程待宿主实测。 |
+| **其他本地 Agent** | 安装到该 Agent 的技能目录，读取 `SKILL.md` | 需能查看图片、读写文件、执行 Python/FFmpeg，并调用已配置的生图工具；接入后需验证。 |
+| **豆包工作等国内 Agent / 工作流平台** | 按平台能力加载 Skill 或拆解为工作流步骤 | 待适配、待验证；需接通视频处理、确认交互、图像生成和成片检查。 |
+
+把 `SKILL.md` 粘贴进普通聊天框只能提供设计指导；完整出图流程还需要上述工具能力。
 
 <details>
 <summary><b>Codex 手动安装、Claude Code 配置与更新</b></summary>
