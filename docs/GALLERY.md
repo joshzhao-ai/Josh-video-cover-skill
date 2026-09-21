@@ -1,5 +1,17 @@
 # 封面作品集
 
+[真实发布成绩与后台截图](RESULTS.md) · [跨题材效果对照](COMPARISON.md)
+
+## Codex 官方分享：与首页对应的双尺寸作品
+
+| 3:4 竖版 | 4:3 横版 |
+|:---:|:---:|
+| <img src="../assets/published/codex-official-3x4.png" width="300" alt="Codex 官方分享实际发布竖版"> | <img src="../assets/published/codex-official-4x3.png" width="520" alt="Codex 官方分享同系列横版"> |
+
+## 更多双模型创作案例
+
+以下作品用于展示视觉设计和双尺寸能力，未将首页发布成绩归属于这些不同版本。
+
 以下均由本 Skill 的真实工作流生成，并从候选中人工选出最终版。每组 4:3 都是选中 3:4 后的原生横版续作，不是简单裁切。
 
 ### Dreamina / Seedream：真人与产品互动

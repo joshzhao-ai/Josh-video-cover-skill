@@ -1,0 +1,98 @@
+[
+  {
+    "asset": "assets/published/codex-official-3x4.png",
+    "source_filename": "ChatGPT Image 2026年7月15日 13_36_21.png",
+    "sha256": "9f61d177ce706ffac7a6b69768a921da61f14dae201873f5fc23bcb0a294eacd",
+    "transformation": "none"
+  },
+  {
+    "asset": "assets/published/codex-official-4x3.png",
+    "source_filename": "ChatGPT Image 2026年7月15日 13_37_11.png",
+    "sha256": "db801bdf1f2ad03e688a5d0ab6f1cc0561aa992508ff1852995359c6fd2cc565",
+    "transformation": "none"
+  },
+  {
+    "asset": "assets/published/kimi-k3-3x4.png",
+    "source_filename": "v4_click_optimized.png",
+    "sha256": "e54a6e1839ace39112794e33c9d6d5b2233d31584f6a883eb3a1914ecf649af3",
+    "transformation": "none"
+  },
+  {
+    "asset": "assets/published/claude-vs-codex-3x4.png",
+    "source_filename": "ChatGPT Image 2026年7月15日 13_38_28.png",
+    "sha256": "dfa4d745cd0c8bf35d4877722d655f9513c34bee781d1ee460aed0f9a8887166",
+    "transformation": "none"
+  },
+  {
+    "asset": "assets/comparison/camera-gpt-skill.png",
+    "source_filename": "proof_editorial.png",
+    "sha256": "775bdcd1c1d16ee5f62d9aa0c6e827b5687a9ac62c7dc0b0d7da81af95af6d3b",
+    "transformation": "none"
+  },
+  {
+    "asset": "assets/comparison/food-gpt-skill.png",
+    "source_filename": "hook_poster.png",
+    "sha256": "3096c0d1fc4477ec90cd29912b869cf88ccd56cdcf766fea8146a5798409d8a9",
+    "transformation": "none"
+  },
+  {
+    "asset": "assets/comparison/camera-direct.png",
+    "source_filename": "camera-direct.png",
+    "sha256": "b86a56a679d7807de51dbb9300c71974f1a0c94be57e9e3201e5a03961710397",
+    "transformation": "none"
+  },
+  {
+    "asset": "assets/comparison/camera-seedream-skill.png",
+    "source_filename": "camera-seedream.png",
+    "sha256": "2bfa2ac475f1b19f1aa09bfd050bc43f54fef5e608c7ee367e9c5a30f7fcd736",
+    "transformation": "none"
+  },
+  {
+    "asset": "assets/comparison/food-seedream-skill.png",
+    "source_filename": "food-seedream.png",
+    "sha256": "19b6cd99180fb1f555fd87a9eba0e113a33c1f122ebd4809d69eeeb55f1bffe8",
+    "transformation": "none"
+  },
+  {
+    "asset": "assets/comparison/codex-direct.jpg",
+    "source_filename": "naive_codex.jpg",
+    "sha256": "656b374772818c6651d9193096b5d52a959d8941d23045b32fa7e594a10b4094",
+    "transformation": "none"
+  },
+  {
+    "asset": "assets/comparison/food-direct.jpg",
+    "source_filename": "naive_food.jpg",
+    "sha256": "4f13ea1ba48a768a7459680486ff03d175c68e7a2d0f2ac73b491f8373cecbc3",
+    "transformation": "none"
+  },
+  {
+    "asset": "assets/comparison/codex-seedream-skill.jpg",
+    "source_filename": "g_codex_jump.jpg",
+    "sha256": "cd7f752e2afab0c5f0fa70d660b1104ba1d1a2df7127d5ef1497813b1f0b5a2b",
+    "transformation": "none"
+  },
+  {
+    "asset": "assets/comparison/original-five-categories.png",
+    "source_filename": "IlDDbbjtsoScA1xAOmZc43AQnDg.png",
+    "sha256": "14d33c4ba3040b919beb35bcde7d811a5e6261c619c3766fa6619904765ecacd",
+    "transformation": "none"
+  },
+  {
+    "asset": "assets/evidence/douyin-kimi-and-versus.png",
+    "source_filename": "codex-clipboard-8cf14b68-a7ab-48b1-975f-f5e13b5c533c.png",
+    "sha256": "ea91d2551f9e77f7eb7d38eb86d9f0adffabaf97f32205137f6e4a63d07d7c2e",
+    "transformation": "none"
+  },
+  {
+    "asset": "assets/evidence/douyin-claude.png",
+    "source_filename": "codex-clipboard-f82523b2-2404-4fc3-8bc1-dbd7d13c88e9.png",
+    "sha256": "7570739e27704eb370382218cc8bdee723a297379f624d286933b080fdf440a9",
+    "transformation": "none"
+  },
+  {
+    "asset": "assets/evidence/douyin-codex.png",
+    "source_filename": "codex-clipboard-3ac43062-2690-4f92-af34-2a456f3d9505.png",
+    "sha256": "1dc35975b60b02a4f73f7b223a728d387fcf3445223061e4770cf72b7f93f884",
+    "transformation": "none"
+  }
+]
