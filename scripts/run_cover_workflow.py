@@ -13,7 +13,7 @@ from PIL import Image, ImageDraw
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 DEFAULT_OUTPUT_ROOT = Path.home() / "Desktop" / "video-covers"
-DEFAULT_LAYOUT_REFERENCE = Path("/path/to/user/Desktop/OpenClaw封面_4比3 1.png")
+DEFAULT_LAYOUT_REFERENCE = Path.home() / "Desktop" / "OpenClaw封面_4比3 1.png"
 VARIANTS = ("info-heavy", "visual-heavy", "balanced")
 STOP_STAGES = ("frames", "analysis", "gate", "prompts", "covers", "review", "landscape", "done")
 
