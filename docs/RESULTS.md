@@ -6,10 +6,10 @@
 
 | 视频 | 发布日期（后台显示） | 播放 | 封面点击率 | 截图位置 |
 | --- | --- | --- | --- | --- |
-| OpenAI 官方是怎么用 Codex 的？ | 2026-06-08 | 99.1 万 | 12.43% | [截图 A](#截图-a--codex-官方分享)，首行置顶作品 |
-| Kimi K3 到底有多强？它已经能替你做哪些工作？ | 2026-07-25 | 1.2 万 | 49.78% | [截图 B](#截图-b--kimi-k3-与-claude-code-vs-codex)，首行 |
-| Claude，你在我的剧本杀青了！ | 2026-08-04 | 1.4 万 | 32.8% | [截图 C](#截图-c--claude-杀青了)，最下方作品 |
-| ClaudeCode 和 Codex 到底选哪个？ | 2026-05-26 | 42.8 万 | 12.94% | [截图 B](#截图-b--kimi-k3-与-claude-code-vs-codex)，最下方作品 |
+| OpenAI 官方是怎么用 Codex 的？ | 2026-06-08 | 99.1 万 | 12.43% | [截图 A](#截图-a--codex-官方分享) |
+| Kimi K3 到底有多强？它已经能替你做哪些工作？ | 2026-07-25 | 1.2 万 | 49.78% | [截图 B](#截图-b--kimi-k3-与-claude-code-vs-codex) |
+| Claude，你在我的剧本杀青了！ | 2026-08-04 | 1.4 万 | 32.8% | [截图 C](#截图-c--claude-杀青了) |
+| ClaudeCode 和 Codex 到底选哪个？ | 2026-05-26 | 42.8 万 | 12.94% | [截图 B](#截图-b--kimi-k3-与-claude-code-vs-codex) |
 
 ## 如何理解这些数字
 
@@ -18,28 +18,28 @@
 - **精度：** “万”为后台显示的近似单位，未反推精确播放次数；不把 99.1 万四舍五入写成 100 万。
 - **结论范围：** 说明 Skill 已用于真实发布且有可核对的作品成绩。视频内容、选题、分发等因素也影响表现；当前数据不构成封面独立贡献的 A/B 实验证明。
 - **图片对应：** 四个案例的独立封面均已与后台缩略图核对；Claude 的横竖原图由作者补充提供。
-- **裁切方式：** 首页的数据横条从对应作品的原始截图连续裁切，保留全部指标列和像素；不重绘、不改数字、不拼接不同作品的数据。裁切坐标和文件校验值记录在 [素材清单](showcase-assets.json) 中。
+- **裁切方式：** 首页的数据横条从对应作品的原始截图连续裁切，保留全部指标列和像素；不重绘、不改数字、不拼接不同作品的数据。公开文件的校验值记录在 [素材清单](showcase-assets.json) 中，原始截图与裁切记录由作者本地留存。
 
-以下先展示对应作品的数据横条，点击可查看完整截图。后台将收藏、点赞等部分数值显示为“万”，均沿用原始显示精度。
+以下先展示对应作品的数据横条，点击可放大查看。后台将收藏、点赞等部分数值显示为“万”，均沿用原始显示精度。
 
 ## 截图 A · Codex 官方分享
 
-对应首行置顶作品：**99.1 万播放、4.8 万点赞、6658 分享、4.9 万收藏、5381 吸粉量、12.43% 封面点击率。**
+**99.1 万播放、4.8 万点赞、6658 分享、4.9 万收藏、5381 吸粉量、12.43% 封面点击率。**
 
-[![Codex 官方分享后台数据横条](../assets/evidence/codex-metrics.png)](../assets/evidence/douyin-codex.png)
+[![Codex 官方分享后台数据横条](../assets/evidence/codex-metrics.png)](../assets/evidence/codex-metrics.png)
 
 ## 截图 B · Kimi K3 与 Claude Code vs Codex
 
-首行 **Kimi K3：1.2 万播放，49.78% 封面点击率。**
+**Kimi K3：1.2 万播放，49.78% 封面点击率。**
 
-[![Kimi K3 后台数据横条](../assets/evidence/kimi-metrics.png)](../assets/evidence/douyin-kimi-and-versus.png)
+[![Kimi K3 后台数据横条](../assets/evidence/kimi-metrics.png)](../assets/evidence/kimi-metrics.png)
 
-最下方 **Claude Code vs Codex：42.8 万播放、1.2 万点赞、7405 收藏、12.94% 封面点击率。**
+**Claude Code vs Codex：42.8 万播放、1.2 万点赞、7405 收藏、12.94% 封面点击率。**
 
-[![Claude Code vs Codex 后台数据横条](../assets/evidence/versus-metrics.png)](../assets/evidence/douyin-kimi-and-versus.png)
+[![Claude Code vs Codex 后台数据横条](../assets/evidence/versus-metrics.png)](../assets/evidence/versus-metrics.png)
 
 ## 截图 C · Claude 杀青了
 
-对应最下方作品：1.4 万播放，32.8% 封面点击率。
+1.4 万播放，32.8% 封面点击率。
 
-[![Claude 杀青了后台数据横条](../assets/evidence/claude-metrics.png)](../assets/evidence/douyin-claude.png)
+[![Claude 杀青了后台数据横条](../assets/evidence/claude-metrics.png)](../assets/evidence/claude-metrics.png)

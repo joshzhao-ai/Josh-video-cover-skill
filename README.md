@@ -42,26 +42,26 @@
 
 **Codex 官方分享 · 99.1 万播放 / 4.9 万收藏 / 5381 涨粉**
 
-[![Codex 官方分享的后台数据横条：99.1万播放、4.8万点赞、636评论、6658分享、4.9万收藏、12.43%封面点击率、5381吸粉量](assets/evidence/codex-metrics.png)](assets/evidence/douyin-codex.png)
+[![Codex 官方分享的后台数据横条：99.1万播放、4.8万点赞、636评论、6658分享、4.9万收藏、12.43%封面点击率、5381吸粉量](assets/evidence/codex-metrics.png)](assets/evidence/codex-metrics.png)
 
 **Kimi K3 · 49.78% 封面点击率**
 
-[![Kimi K3 的后台数据横条：1.2万播放，49.78%封面点击率](assets/evidence/kimi-metrics.png)](assets/evidence/douyin-kimi-and-versus.png)
+[![Kimi K3 的后台数据横条：1.2万播放，49.78%封面点击率](assets/evidence/kimi-metrics.png)](assets/evidence/kimi-metrics.png)
 
 <details>
 <summary>展开另外两张封面的后台数据</summary>
 
 **Claude 杀青了 · 32.8% 封面点击率**
 
-[![Claude 杀青了的后台数据横条：1.4万播放，32.8%封面点击率](assets/evidence/claude-metrics.png)](assets/evidence/douyin-claude.png)
+[![Claude 杀青了的后台数据横条：1.4万播放，32.8%封面点击率](assets/evidence/claude-metrics.png)](assets/evidence/claude-metrics.png)
 
 **Claude Code vs Codex · 42.8 万播放**
 
-[![Claude Code vs Codex 的后台数据横条：42.8万播放，12.94%封面点击率](assets/evidence/versus-metrics.png)](assets/evidence/douyin-kimi-and-versus.png)
+[![Claude Code vs Codex 的后台数据横条：42.8万播放，12.94%封面点击率](assets/evidence/versus-metrics.png)](assets/evidence/versus-metrics.png)
 
 </details>
 
-<sub>横条从抖音后台截图原样裁切，点击可看完整截图。以上为精选案例的截图时点成绩；播放表现由内容、选题、封面与分发共同影响。[查看来源与统计口径](docs/RESULTS.md)。</sub>
+<sub>横条从抖音后台截图原样裁切，点击可放大数据横条。以上为精选案例的截图时点成绩；播放表现由内容、选题、封面与分发共同影响。[查看来源与统计口径](docs/RESULTS.md)。</sub>
 
 ## 从内容到封面，把经验变成工作流
 

@@ -60,21 +60,6 @@
     "transformation": "none"
   },
   {
-    "asset": "assets/evidence/douyin-kimi-and-versus.png",
-    "sha256": "ea91d2551f9e77f7eb7d38eb86d9f0adffabaf97f32205137f6e4a63d07d7c2e",
-    "transformation": "none"
-  },
-  {
-    "asset": "assets/evidence/douyin-claude.png",
-    "sha256": "7570739e27704eb370382218cc8bdee723a297379f624d286933b080fdf440a9",
-    "transformation": "none"
-  },
-  {
-    "asset": "assets/evidence/douyin-codex.png",
-    "sha256": "1dc35975b60b02a4f73f7b223a728d387fcf3445223061e4770cf72b7f93f884",
-    "transformation": "none"
-  },
-  {
     "asset": "assets/published/claude-wrap-3x4.png",
     "sha256": "b5747bb16a70ed3c8952b9a442fa4883e4714df8a4442ecda68799c7dd2f8183",
     "transformation": "none"
@@ -86,53 +71,21 @@
   },
   {
     "asset": "assets/evidence/codex-metrics.png",
-    "source_asset": "assets/evidence/douyin-codex.png",
-    "source_sha256": "1dc35975b60b02a4f73f7b223a728d387fcf3445223061e4770cf72b7f93f884",
-    "crop_box": [
-      700,
-      825,
-      2645,
-      937
-    ],
     "sha256": "18dab26a04106051c3b4fe2b01d9b609351c6dd53bc437e484046d5ee9f533b0",
     "transformation": "crop_only"
   },
   {
     "asset": "assets/evidence/kimi-metrics.png",
-    "source_asset": "assets/evidence/douyin-kimi-and-versus.png",
-    "source_sha256": "ea91d2551f9e77f7eb7d38eb86d9f0adffabaf97f32205137f6e4a63d07d7c2e",
-    "crop_box": [
-      700,
-      820,
-      2645,
-      934
-    ],
     "sha256": "348bd4c74befbc27e15835bf1c26a97481fa1ce576d01b10476f87701e706b60",
     "transformation": "crop_only"
   },
   {
     "asset": "assets/evidence/claude-metrics.png",
-    "source_asset": "assets/evidence/douyin-claude.png",
-    "source_sha256": "7570739e27704eb370382218cc8bdee723a297379f624d286933b080fdf440a9",
-    "crop_box": [
-      700,
-      1980,
-      2645,
-      2090
-    ],
     "sha256": "f720a44c5ac9613e0e729201e167b8a28a9fef5a92fec5d6087b94d9d2185227",
     "transformation": "crop_only"
   },
   {
     "asset": "assets/evidence/versus-metrics.png",
-    "source_asset": "assets/evidence/douyin-kimi-and-versus.png",
-    "source_sha256": "ea91d2551f9e77f7eb7d38eb86d9f0adffabaf97f32205137f6e4a63d07d7c2e",
-    "crop_box": [
-      700,
-      1978,
-      2645,
-      2090
-    ],
     "sha256": "96ab1630ae43dced46624e9755638966a6f479abc15e958e623dea864d7d41b6",
     "transformation": "crop_only"
   },
