@@ -103,5 +103,20 @@
     "asset": "assets/comparison/game-gpt-skill.png",
     "sha256": "e85e84553cf5f2d5296d88d3f802074dbd9711bf98d3d0a8e3953f66207d1b87",
     "transformation": "crop; no redraw"
+  },
+  {
+    "asset": "assets/comparison/education-direct.png",
+    "sha256": "5f4720f90f5d9e615c666c81701545f6494ebe1342ea98f1d4a3d7aa34c927d2",
+    "transformation": "crop; no redraw"
+  },
+  {
+    "asset": "assets/comparison/education-seedream-skill.png",
+    "sha256": "908a732cdaa329b7c2212a08150e1269923b40fc9f96be627b7622420be40f2d",
+    "transformation": "crop; no redraw"
+  },
+  {
+    "asset": "assets/comparison/education-gpt-skill.png",
+    "sha256": "5b48418188a4239e43a395bff2631333baf7c35c9f22f57a631f4ef992308b8f",
+    "transformation": "crop; no redraw"
   }
 ]
