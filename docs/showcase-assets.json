@@ -88,5 +88,20 @@
     "asset": "assets/evidence/versus-metrics.png",
     "sha256": "96ab1630ae43dced46624e9755638966a6f479abc15e958e623dea864d7d41b6",
     "transformation": "crop_only"
+  },
+  {
+    "asset": "assets/comparison/game-direct.png",
+    "sha256": "80c59cd307057918b28d7221f25c61832631abd87fdebb737f1bf6e330bb72dd",
+    "transformation": "crop; no redraw"
+  },
+  {
+    "asset": "assets/comparison/game-seedream-skill.png",
+    "sha256": "77e054338975671d521debca17be1c665ee2b7968b131eeade3e1cdf2ced31f9",
+    "transformation": "crop; no redraw"
+  },
+  {
+    "asset": "assets/comparison/game-gpt-skill.png",
+    "sha256": "e85e84553cf5f2d5296d88d3f802074dbd9711bf98d3d0a8e3953f66207d1b87",
+    "transformation": "crop; no redraw"
   }
 ]
