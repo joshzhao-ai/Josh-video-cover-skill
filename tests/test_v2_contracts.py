@@ -4,6 +4,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -76,8 +77,27 @@ class V2ContractTests(unittest.TestCase):
             source_cover="",
             source_route="",
             routes=[],
+            vertical_count=2,
+            landscape_variants="thumbnail",
+            exact_aspect_ratio=False,
             out=str(self.root / out_name),
         )
+
+    def build_manifest(self, args):
+        with patch.object(builder, "resolve_dreamina_model", return_value={
+            "cli": "dreamina", "resolved_model": "5.0-pro", "pro_available": True
+        }):
+            builder.build_requests(args)
+        return json.loads((Path(args.out) / "cover_requests.json").read_text(encoding="utf-8"))
+
+    def select_vertical(self, route="tangible_scene"):
+        vertical = self.root / "selected.png"
+        vertical.write_bytes(b"image")
+        workflow.command_register_candidate(argparse.Namespace(
+            job=str(self.job), ratio="3:4", route=route, image=str(vertical), manifest=""
+        ))
+        workflow.command_select_vertical(argparse.Namespace(job=str(self.job), image="", route=route))
+        return vertical.resolve()
 
     def test_title_cannot_bypass_person_gate(self):
         self.write_analysis(has_person=True)
@@ -93,15 +113,82 @@ class V2ContractTests(unittest.TestCase):
         with self.assertRaises(SystemExit):
             workflow.command_assert_ready(argparse.Namespace(job=str(self.job), ratio="4:3"))
 
-    def test_three_vertical_routes_are_distinct(self):
+    def test_default_two_vertical_routes_are_distinct_for_both_engines(self):
+        analysis = self.choose_copy(has_person=False)
+        for engine, mode in (("image2", "recipe-direct"), ("dreamina", "recipe-direct"), ("dreamina", "grounded")):
+            with self.subTest(engine=engine, mode=mode):
+                args = self.builder_args(analysis, engine=engine)
+                args.dreamina_mode = mode
+                manifest = self.build_manifest(args)
+                routes = manifest["routes"]
+                self.assertEqual([item["parent_route"] for item in routes], ["hook_poster", "tangible_scene"])
+                self.assertEqual(len({item["creative_route"]["layout"] for item in routes}), 2)
+                self.assertEqual(len({item["creative_route"]["palette"] for item in routes}), 2)
+                self.assertEqual(manifest["review_contract"]["aspect_ratio"]["relative_tolerance"], 0.002)
+
+    def test_explicit_vertical_counts_and_routes_are_preserved(self):
+        analysis = self.choose_copy(has_person=False)
+        for engine in ("image2", "dreamina"):
+            for count in (1, 2, 3):
+                with self.subTest(engine=engine, count=count):
+                    args = self.builder_args(analysis, engine=engine)
+                    args.vertical_count = count
+                    self.assertEqual(len(self.build_manifest(args)["routes"]), count)
+            for wanted in (["proof_editorial"], ["hook_poster", "proof_editorial", "tangible_scene"]):
+                with self.subTest(engine=engine, routes=wanted):
+                    args = self.builder_args(analysis, engine=engine)
+                    args.vertical_count = 1
+                    args.routes = wanted
+                    self.assertEqual([item["name"] for item in self.build_manifest(args)["routes"]], wanted)
+
+    def test_default_pair_keeps_full_library_for_every_theme_and_profile(self):
+        for theme in ("general_knowledge", "ai_probability_experiment", "ai_3d_printing", "ai_dev_tool", "camera_lifestyle"):
+            for profile in ("none", "creator_product_interaction"):
+                with self.subTest(theme=theme, profile=profile):
+                    routes = builder.profile_routes(builder.routes_for_theme(theme, True), profile)
+                    selected = builder.default_vertical_routes(routes)
+                    self.assertEqual(selected, [routes[0], routes[2]])
+                    self.assertEqual(len(routes), 3)
+
+    def test_landscape_defaults_to_one_thumbnail_and_accepts_explicit_variants(self):
+        analysis = self.choose_copy(has_person=False)
+        vertical = self.select_vertical()
+        for engine, mode in (("image2", "recipe-direct"), ("dreamina", "recipe-direct"), ("dreamina", "grounded")):
+            for choice, expected in (("thumbnail", ["thumbnail"]), ("faithful", ["faithful"]), ("both", ["faithful", "thumbnail"])):
+                with self.subTest(engine=engine, mode=mode, choice=choice):
+                    args = self.builder_args(analysis, ratio="4:3", engine=engine)
+                    args.dreamina_mode = mode
+                    args.landscape_variants = choice
+                    routes = self.build_manifest(args)["routes"]
+                    self.assertEqual([item["creative_route"]["variant_mode"] for item in routes], expected)
+                    for route in routes:
+                        self.assertEqual(route["parent_route"], "tangible_scene")
+                        self.assertEqual(route["source_route"], "tangible_scene")
+                        self.assertEqual(route["source_cover"], str(vertical))
+                        self.assertIn("selected_vertical_reference", route["reference_roles"])
+                        self.assertIn(str(vertical), route["reference_images"])
+                        self.assertEqual(route["copy"]["title"], "AI 工具")
+                        if engine == "image2":
+                            self.assertIn("Preserve campaign invariants", route["prompt"])
+                        else:
+                            self.assertIn("横版沿用竖版路线「tangible_scene」", route["prompt"])
+
+    def test_landscape_can_continue_every_historical_route(self):
+        analysis = self.choose_copy(has_person=False)
+        for route_id in ("hook_poster", "proof_editorial", "tangible_scene"):
+            self.select_vertical(route_id)
+            for engine in ("image2", "dreamina"):
+                with self.subTest(route=route_id, engine=engine):
+                    args = self.builder_args(analysis, ratio="4:3", engine=engine)
+                    args.vertical_count = 1
+                    routes = self.build_manifest(args)["routes"]
+                    self.assertEqual([item["name"] for item in routes], [route_id + "__thumbnail"])
+
+    def test_exact_upload_constraint_overrides_aspect_tolerance(self):
         analysis = self.choose_copy(has_person=False)
         args = self.builder_args(analysis)
-        builder.build_requests(args)
-        manifest = json.loads((Path(args.out) / "cover_requests.json").read_text(encoding="utf-8"))
-        routes = manifest["routes"]
-        self.assertEqual(len(routes), 3)
-        self.assertEqual(len({item["parent_route"] for item in routes}), 3)
-        self.assertEqual(len({item["creative_route"]["layout"] for item in routes}), 3)
+        args.exact_aspect_ratio = True
+        self.assertEqual(self.build_manifest(args)["review_contract"]["aspect_ratio"]["relative_tolerance"], 0.0)
 
     def test_dreamina_landscape_uses_selected_cover_by_default(self):
         analysis = self.choose_copy(has_person=False)
@@ -124,7 +211,8 @@ class V2ContractTests(unittest.TestCase):
         finally:
             builder.resolve_dreamina_model = original_resolver
         manifest = json.loads((Path(args.out) / "cover_requests.json").read_text(encoding="utf-8"))
-        self.assertEqual(len(manifest["routes"]), 2)
+        self.assertEqual(len(manifest["routes"]), 1)
+        self.assertEqual(manifest["routes"][0]["creative_route"]["variant_mode"], "thumbnail")
         for route in manifest["routes"]:
             self.assertIn("selected_vertical_reference", route["reference_roles"])
             self.assertIn(str(vertical.resolve()), route["reference_images"])

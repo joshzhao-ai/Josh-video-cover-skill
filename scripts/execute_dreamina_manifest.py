@@ -19,6 +19,7 @@ TRANSIENT_ERRORS = (
     "read tcp",
     "timeout",
 )
+ASPECT_RATIO_RELATIVE_TOLERANCE = 0.002
 
 
 def read_json(path):
@@ -64,11 +65,14 @@ def media_files(path):
     )
 
 
-def validate_ratio(path, ratio):
-    expected = 3 / 4 if ratio == "3:4" else 4 / 3
+def validate_ratio(path, ratio, relative_tolerance=ASPECT_RATIO_RELATIVE_TOLERANCE):
+    if not 0 <= relative_tolerance <= ASPECT_RATIO_RELATIVE_TOLERANCE:
+        raise ValueError("Aspect ratio relative tolerance must be between 0 and 0.002.")
+    ratio_width, ratio_height = {"3:4": (3, 4), "4:3": (4, 3)}[ratio]
     with Image.open(path) as image:
-        actual = image.width / image.height
-        if abs(actual - expected) > 0.05:
+        # Integer cross-products avoid a false failure at the tolerance boundary.
+        relative_error = abs(image.width * ratio_height - image.height * ratio_width) / (image.height * ratio_width)
+        if relative_error > relative_tolerance:
             raise RuntimeError(
                 f"Dreamina returned {image.width}x{image.height} for requested {ratio}; refusing to crop it silently."
             )
@@ -131,6 +135,9 @@ def main():
 
     manifest_path = Path(args.manifest).expanduser().resolve()
     manifest = read_json(manifest_path)
+    relative_tolerance = manifest.get("review_contract", {}).get("aspect_ratio", {}).get(
+        "relative_tolerance", ASPECT_RATIO_RELATIVE_TOLERANCE
+    )
     wanted = set(args.route)
     routes = [item for item in manifest.get("routes", []) if not wanted or item.get("name") in wanted]
     if wanted - {item.get("name") for item in routes}:
@@ -143,15 +150,15 @@ def main():
             raise SystemExit(f"Route {item.get('name')} is not an executable Dreamina request.")
         target = Path(item["expected_output"]).expanduser().resolve()
         if target.exists() and not args.force:
-            validate_ratio(target, item["ratio"])
+            validate_ratio(target, item["ratio"], relative_tolerance)
             print(target)
             continue
         download_dir = manifest_path.parent / ".dreamina-downloads" / item["name"]
         download_dir.mkdir(parents=True, exist_ok=True)
         source = submit_and_download(item["dreamina_command"], download_dir, args.timeout, args.interval)
-        validate_ratio(source, item["ratio"])
+        validate_ratio(source, item["ratio"], relative_tolerance)
         save_native(source, target)
-        validate_ratio(target, item["ratio"])
+        validate_ratio(target, item["ratio"], relative_tolerance)
         print(target)
 
 

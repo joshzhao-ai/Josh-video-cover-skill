@@ -118,5 +118,20 @@
     "asset": "assets/comparison/education-gpt-skill.png",
     "sha256": "5b48418188a4239e43a395bff2631333baf7c35c9f22f57a631f4ef992308b8f",
     "transformation": "crop; no redraw"
+  },
+  {
+    "asset": "assets/showcase/deepseek-harness-portrait-3x4.png",
+    "sha256": "ce564140133ed33d7bf790909916a97306f038020ba9da19ad98de13e45dca27",
+    "transformation": "native image_gen output; copied without pixel changes"
+  },
+  {
+    "asset": "assets/showcase/deepseek-harness-portrait-4x3.png",
+    "sha256": "4d0c81dbc256eb825b3b8e4d16cf341118123722090995a6eaedaa662303a175",
+    "transformation": "native image_gen output; copied without pixel changes"
+  },
+  {
+    "asset": "assets/showcase/claude-code-ban-avoidance-black-orange-3x4.png",
+    "sha256": "4b267245dcf981795303d7dbeddaa95a48b0a1a6d5822ca6539e10247193b4d3",
+    "transformation": "native image_gen output; copied without pixel changes"
   }
 ]

@@ -1,6 +1,6 @@
 interface:
   display_name: "Josh Video Cover Skill"
-  short_description: "分析本地视频，生成可点击且跨比例一致的短视频封面"
+  short_description: "分析本地视频，两版竖图选定后出一版横图，保留质检并优先交付"
   default_prompt: "Use $video-cover-generator to create a high-impact cover from this local video."
 
 policy:

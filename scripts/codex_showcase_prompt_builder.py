@@ -16,6 +16,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 STYLE_PROFILES = ROOT / "references" / "style_profiles.json"
 CAPABILITY_SCRIPT = ROOT / "scripts" / "detect_dreamina_capabilities.py"
+ASPECT_RATIO_RELATIVE_TOLERANCE = 0.002
 
 
 def read_json(path):
@@ -273,6 +274,15 @@ def profile_routes(routes, profile_id):
     return adapted
 
 
+def default_vertical_routes(routes, count=2):
+    """Keep the full library available; default to impact versus scene/action."""
+    if count not in (1, 2, 3):
+        raise SystemExit("--vertical-count must be 1, 2 or 3.")
+    if count == 2 and len(routes) >= 3:
+        return [routes[0], routes[-1]]
+    return routes[:count]
+
+
 def source_contract(source_cover, source_route, copy, route):
     if not source_cover:
         return ""
@@ -410,7 +420,11 @@ def dreamina_prompt_for(analysis, brief, copy, route, ratio, profile_id, profile
             "scene": "超大标题占左侧约55%；主题结果场景满版延伸；真人半身在右侧前景，与场景共享光线和景深",
         }
         if mode == "thumbnail":
-            layouts["impact"] = "缩略图优先：超大标题占左侧约62%；真人半身在右侧约34%；一个结果物横跨下方，标题字面必须比人物更强"
+            layouts.update({
+                "impact": "缩略图优先：超大标题占左侧约62%；真人半身在右侧约34%；一个结果物横跨下方，标题字面必须比人物更强",
+                "proof": "缩略图优先：超大标题占左上约55%-60%；真人半身在左下近景；一个证据物在中下部放大并与标题边缘前后穿插，只保留一条短动线，不做左右分栏",
+                "scene": "缩略图优先：超大标题占上方和左上约55%-60%；结果场景以更近景的前中后景满版展开；真人半身在右下前景；同一个结果物跨过中线与标题边缘咬合，保留原有色彩和材质，不做左右分栏",
+            })
 
     creator_layouts = {
         "3:4": {
@@ -681,6 +695,11 @@ def build_requests(args):
             all_routes = matching
         elif not wanted:
             all_routes = [all_routes[0]]
+    elif args.ratio == "3:4" and not wanted:
+        all_routes = default_vertical_routes(all_routes, getattr(args, "vertical_count", 2))
+    landscape_variants = getattr(args, "landscape_variants", "thumbnail")
+    if landscape_variants not in {"faithful", "thumbnail", "both"}:
+        raise SystemExit("--landscape-variants must be faithful, thumbnail or both.")
     model_info = resolve_dreamina_model(args.dreamina_model) if args.engine == "dreamina" else None
     out = Path(args.out).expanduser().resolve()
     out.mkdir(parents=True, exist_ok=True)
@@ -694,7 +713,11 @@ def build_requests(args):
             thumbnail = dict(route)
             thumbnail["layout"] += "; thumbnail-first native 4:3: primary hook owns 45-60% of visual area; re-stage the same hero/person interaction with stronger foreground depth without changing campaign invariants"
             thumbnail["variant_mode"] = "thumbnail"
-            variants = [(route["id"] + "__faithful", faithful), (route["id"] + "__thumbnail", thumbnail)]
+            variants = [
+                (route["id"] + "__" + mode, variant)
+                for mode, variant in (("faithful", faithful), ("thumbnail", thumbnail))
+                if landscape_variants in {mode, "both"}
+            ]
         for route_id, variant in variants:
             identity_reference = portrait
             selected_reference = source_cover if args.engine != "dreamina" or args.dreamina_use_selected_cover else ""
@@ -760,6 +783,12 @@ def build_requests(args):
         },
         "review_contract": {
             "thumbnail_sizes": {"3:4": "180x240", "4:3": "320x240"},
+            "aspect_ratio": {
+                "relative_tolerance": 0.0 if getattr(args, "exact_aspect_ratio", False) else ASPECT_RATIO_RELATIVE_TOLERANCE,
+                "measurement": "abs((width / height) / requested_ratio - 1)",
+                "within_tolerance": "Keep native pixels; do not regenerate for harmless pixel rounding.",
+                "no_crop_or_stretch": True,
+            },
             "must_check": [
                 "primary hook is readable at feed size",
                 "one-message hierarchy survives after small UI details disappear",
@@ -807,6 +836,18 @@ def main():
     parser.add_argument("--source-cover", default="")
     parser.add_argument("--source-route", default="")
     parser.add_argument("--routes", action="append", default=[])
+    parser.add_argument(
+        "--vertical-count", type=int, choices=[1, 2, 3], default=2,
+        help="Number of 3:4 routes when --routes is omitted (default: 2, impact and scene/action).",
+    )
+    parser.add_argument(
+        "--landscape-variants", choices=["thumbnail", "faithful", "both"], default="thumbnail",
+        help="Native 4:3 continuation variants (default: one thumbnail-first version).",
+    )
+    parser.add_argument(
+        "--exact-aspect-ratio", action="store_true",
+        help="Require exact aspect ratio for a strict upload constraint; otherwise allow 0.2%% relative pixel rounding.",
+    )
     parser.add_argument("--out", required=True)
     args = parser.parse_args()
     build_requests(args)

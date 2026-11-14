@@ -68,7 +68,7 @@
 我是 Josh。这套 Skill 来自我持续制作、发布视频的封面实践，现在把它交给你的 Agent：
 
 - **质量：** 按题材设计字体、人物、产品与光影，同时检查大图质感和小图辨识度。
-- **效率：** 视频分析、标题策划、三条创意路线、横版延展，一次对话串起来。
+- **效率：** 默认两张差异化竖版，选定后续作一张横版；复用已有选择，逐张检查、完成即交付。
 - **点击吸引力：** 把视频里的问题、收益或结果，变成一眼读懂的标题与主视觉。
 - **系列一致性：** 横竖版沿用选中方向的文案、人像、配色和字体。
 
@@ -111,6 +111,25 @@ https://github.com/joshzhao-ai/Josh-video-cover-skill
 
 [查看双模型作品集](docs/GALLERY.md)
 
+## v2.2：更少等待，保留选中的风格
+
+默认两张竖版选方向，再出一张原生横版。已有标题、人像和分析直接复用；检查通过即交付。修改另存，用户更喜欢原版时直接恢复，不再重做。
+
+**DeepSeek Harness · 闷声发大财**
+
+<table>
+<tr><td width="36%" align="center"><a href="assets/showcase/deepseek-harness-portrait-3x4.png"><img src="assets/showcase/deepseek-harness-portrait-3x4.png" width="240" alt="DeepSeek Harness 原版人像竖封面"></a></td><td width="64%" align="center"><a href="assets/showcase/deepseek-harness-portrait-4x3.png"><img src="assets/showcase/deepseek-harness-portrait-4x3.png" width="430" alt="DeepSeek Harness 原生横封面"></a></td></tr>
+<tr><td align="center">3:4 · 自然人像与原创蓝鲸</td><td align="center">4:3 · 同一风格，原生重构</td></tr>
+</table>
+
+奶油纸色、钴蓝大字和自然人像。对比两张加强互动的改版后，作者最终回选这版；记录的是视觉偏好，暂无点击率对照数据。[案例与生成提示词](references/deepseek_portrait_showcase.md)。
+
+**新增用户确认 Showcase：Claude Code · 防封号新思路**
+
+<a href="assets/showcase/claude-code-ban-avoidance-black-orange-3x4.png"><img src="assets/showcase/claude-code-ban-avoidance-black-orange-3x4.png" width="240" alt="Claude Code 防封号新思路黑橙封面，无底部角标"></a>
+
+黑橙高对比、痛点大字、像素角色与云电脑组成单一场景。2026-10-24 用户认可的最终去角标版；本案例记录视觉选择，不代表传播数据或防封号效果已验证。[设计复盘与提示词](references/claude_code_black_orange_showcase.md)。
+
 ## 同一个创意，横竖都成立
 
 选定竖版后，延续它的文案、人像、配色和字体，重新设计横版的构图与空间。
@@ -128,21 +147,21 @@ https://github.com/joshzhao-ai/Josh-video-cover-skill
 
 ## 像和设计师一起做封面
 
-**你做关键选择，Agent 负责分析、设计、检查与交付。**
+**你做关键选择，Agent 负责分析、设计、检查与交付。** 已经给出的标题与人像要求直接复用，只补问缺失信息。
 
 ```mermaid
 flowchart LR
     A[上传视频<br/>Agent 分析亮点] --> B[你确认<br/>标题与人像]
-    B --> C[Agent 生成并检查<br/>3 张竖版]
-    C --> D[你选竖版方向<br/>Agent 续作 2 张横版]
-    D --> E[检查并选定<br/>交付横竖封面]
+    B --> C[Agent 并行生成并检查<br/>2 张竖版]
+    C --> D[你选竖版方向<br/>Agent 续作 1 张横版]
+    D --> E[检查通过即交付<br/>横竖封面]
     classDef user fill:#fff4d6,stroke:#b8871b,color:#302716
     classDef agent fill:#eaf2ff,stroke:#4c77b8,color:#172e50
     class B,D,E user
     class A,C agent
 ```
 
-遇到错字、人物偏差或构图问题，只重做对应候选。全过程保留你的标题、人像与方向选择。
+遇到错字、人物偏差或明显构图问题，只处理对应候选，默认至多补生成一次。没有严格上传尺寸要求时，不为 0.2% 以内的比例舍入误差重生成。全过程保留你的标题、人像与方向选择；更多方案仅按需增加。
 
 <details>
 <summary>看一段实际使用方式</summary>
@@ -151,11 +170,9 @@ flowchart LR
 你：给这个视频制作封面。[附视频]
 AI：分析视频，给出标题和人像选项。
 你：1B。[上传人像，选标题 B]
-AI：生成并检查 3 张不同方向的竖版。
-你：选第 3 张。
-AI：生成并检查 2 张延续该方向的横版。
-你：选第 1 张横版。
-AI：交付选定的横竖封面。
+AI：并行生成并检查 2 张不同方向的竖版，完成一张就展示一张。
+你：选第 2 张。
+AI：生成并检查 1 张延续该方向的横版，通过后直接交付横竖封面。
 ```
 
 </details>

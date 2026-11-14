@@ -1,0 +1,37 @@
+{
+  "engine": "built-in image_gen",
+  "model_version": "Not reported by tool; no inferred model claim",
+  "title": "DeepSeek Harness",
+  "hook": "闷声发大财",
+  "final_selection": "Original work_scene portrait and its native horizontal continuation",
+  "validation_scope": "User-selected visual design; full image and thumbnail checks passed. No CTR or speed benchmark claimed.",
+  "reference_policy": "Creator frame is an identity reference and is not bundled. Whale is original editorial imagery, not an official logo. Reproductions require their own creator reference.",
+  "outputs": [
+    {
+      "asset": "assets/showcase/deepseek-harness-portrait-3x4.png",
+      "ratio": "3:4",
+      "dimensions": [
+        1086,
+        1448
+      ],
+      "sha256": "ce564140133ed33d7bf790909916a97306f038020ba9da19ad98de13e45dca27",
+      "reference_roles": [
+        "identity_reference"
+      ],
+      "prompt": "Use case: ads-marketing. Create ONE exceptional finished Chinese short-video cover, native 3:4 vertical composition, target 1536x2048. This video explores how DeepSeek Harness is growing through an open plugin ecosystem and a playful blue-whale community beyond the usual tech circles. The user supplied this EXACT title; retain it without rewriting.\nONLY visible text, spelled exactly once:\nDeepSeek Harness\n闷声发大财\nTypography contract: DeepSeek Harness is a clear substantial product anchor near the top, and 闷声发大财 is the enormous FIRST-read Chinese headline below/around it. Set 闷声 on one line, 发大财 on the next. Chinese lettering roughly 1.7–2.3 times the English cap height, bold condensed expressive editorial display lettering, carefully readable 闷 声 发 大 财, no missing or repeated character. Keep both English words, especially Harness, readable. Six percent safe margins. Do not include brackets, subtitles, bottom corner captions, labels, UI words, numbers, profits, stats, timestamps, watermarks, QR codes or other text.\nOne message, one integrated main scene. The whale is an original playful visual metaphor for the blue-whale community described in the supplied script, not a copied or claimed official logo. The title is metaphorical, not a financial result claim: no cash, currency symbols, coins, banknotes, wealth charts, vaults, or revenue figures. Avoid screenshot collages, dense cards, neon cyber dashboards, multiple competing focal points and course-poster lists. Image must be stylish and instantly legible at 180x240.\n\nREFERENCE: Image 1 is IDENTITY AND WARDROBE ONLY. Preserve the actual East Asian male creator's face, facial proportions, short slightly tousled black hair, natural age, black zip-front hoodie and realistic healthy build. Do not inherit any screenshot text, chair, walls, subtitles, watermarks or UI. Face should remain recognizable, not a generic handsome replacement. Portrait rendering can improve the dim lighting but must not beautify into a new identity.\nART DIRECTION B: Sophisticated bright cream-paper and cobalt-blue editorial magazine cover, decisively different from a black cinematic poster. Giant ink-black product anchor and vivid cobalt Chinese headline dominate the upper half in tactile bold cut-paper/letterpress typography, tight lines and excellent reading hierarchy. Lower right/front: the real creator as a large well-lit chest-up photoreal portrait, black hoodie unchanged, attentive confident expression with a slight knowing smile, holding his small gray furry microphone naturally in one hand, other arm mostly relaxed and out of view to avoid awkward anatomy. Remove office chair. His head and shoulder overlap the edge of the headline without covering any letter, making the portrait and typography interlock. Lower left/front: one oversized original friendly blue whale, a tactile ceramic/paper sculpture with calm eyes and one broad lifted tail, constructed from just a few visibly interlocking modules. Three subtle socket-shaped seams suggest plugins; no diagrams or labels. Whale is integrated into the same studio-lit foreground and partly overlaps the lower edge of the creator's torso, with obvious separation from his hands. A single sweeping cobalt curved shape behind the whale suggests the community growing outwards, not an arrow diagram. Warm off-white negative space, gentle natural shadows, deliberate paper grain, one small muted golden highlight. Large face and large whale, no tiny portrait inset, no body distortion, no extra hands, no fake official logo. No bottom caption or explanatory text. This should feel like an opinionated creator-led editorial cover, not corporate advertising."
+    },
+    {
+      "asset": "assets/showcase/deepseek-harness-portrait-4x3.png",
+      "ratio": "4:3",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "sha256": "4d0c81dbc256eb825b3b8e4d16cf341118123722090995a6eaedaa662303a175",
+      "reference_roles": [
+        "selected_vertical_reference"
+      ],
+      "prompt": "Use case: ads-marketing. Recompose the supplied selected portrait cover into ONE finished native 4:3 horizontal short-video cover, target 1536x1152. This is the same campaign in a new native horizontal composition, not a crop, stretched image, outpainted pillarbox, or pasted vertical layout.\nReference image role: selected_vertical_reference. Preserve its exact creator identity (same facial proportions, black tousled short hair, natural knowing smile, black zip-up hoodie, gray furry handheld microphone), the same blue-and-cream modular friendly whale, cobalt paper shapes, warm cream paper texture, black serif English type, giant cobalt Chinese display lettering and subtle gold accent. Do not replace the creator with a more generic handsome face. No additional people, arms, hands or objects.\nEXACT visible copy, each once:\nDeepSeek Harness\n闷声发大财\nNo other text, bottom captions, subtitles, badges, numbers, stats, watermark or logo. Do not add currency or profit graphics.\nNew horizontal hierarchy: Chinese 闷声发大财 is the dominant FIRST read, with the same bold cut-paper typography from the selected cover. Split into two lines 闷声 / 发大财. It occupies roughly 45–55% of the visual emphasis, about 1.8 times the letter height of the English product anchor. DeepSeek Harness remains a complete readable black serif anchor in the upper area. All five Chinese characters must be clear, correct, uncropped and never covered.\nUse a lively integrated horizontal magazine composition: giant Chinese headline across upper-left and center, creator in a large close chest-up view on the right, his hair/shoulder gently interlocking with empty spaces beside the typography without hiding letters. The same oversized blue modular whale sweeps diagonally across the lower foreground from left toward the creator's lower torso, with a clear raised tail and calm smiling eye. Keep whale separate from the microphone hand; it rests naturally on the textured cream foreground and does not appear held. The whale and torn cobalt paper shape cross the center and connect the headline and portrait into one composition; avoid a mechanical left/right panel split. Keep the face at least as legible as in the selected vertical image, natural facial texture and hoodie category unchanged. Soft studio shadows and tactile paper/ceramic materials, no dark cyber background. Generous 5–6% text safe margins, unclipped hair. Preserve the friendly editorial personality and blue/cream palette. Must read at 320x240.\n"
+    }
+  ]
+}

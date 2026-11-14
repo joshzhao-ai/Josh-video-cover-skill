@@ -1,0 +1,33 @@
+{
+  "accepted_date": "2026-10-24",
+  "engine": "built-in image_gen",
+  "model_version": "Not reported by tool; no inferred model claim",
+  "approved_variant": "outcome_editorial_v3",
+  "title": "Claude Code",
+  "hook": "防封号新思路",
+  "subtitle": "",
+  "aspect_ratio": "3:4",
+  "dimensions": [
+    1086,
+    1448
+  ],
+  "user_feedback": "这个黑橙版的封面效果还挺不错的，算个 showcase 吧",
+  "asset": "assets/showcase/claude-code-ban-avoidance-black-orange-3x4.png",
+  "sha256": "4b267245dcf981795303d7dbeddaa95a48b0a1a6d5822ca6539e10247193b4d3",
+  "source_video": "IMG_0366.MOV",
+  "validation_scope": "User-approved visual showcase; no publication, CTR, ban-prevention efficacy, or landscape validation claimed.",
+  "prompt_sequence": [
+    {
+      "step": "initial_generation",
+      "prompt": "Create ONE finished short-video cover, native 3:4 portrait, target 1536x2048. Chinese editorial cover for Josh's actual video about moving Claude Code onto a US cloud computer and showing his experience. Reference image is CONTENT ONLY: use the friendly orange rectangular pixel creature shown in the cream terminal-avatar cards near the center of that photographed laptop screen. Two vertical black eyes, simple orange block body, small squared side arms and short feet. This is a custom avatar visible in the video, not an official logo. Ignore EVERY screenshot word, layout, interface, subtitle, dock icon and background. No human presenter. Do not copy the photographed screen as a rectangle.\nEXACT VISIBLE TEXT, each once only:\nClaude Code\n搬进云电脑\n我的使用实测\nTypographic hierarchy: Chinese headline 搬进云电脑 is the FIRST read, huge and bold, about 1.7 times the cap height of Claude Code. The English name is a clear product anchor; the final short Chinese line is a modest editorial subline. Large safe margins at least 6 percent. No other words, labels, badges, statistics, flags, watermarks or branding. Avoid any promise of no bans, guaranteed safety or official endorsement. One unforgettable visual metaphor, one headline, no dashboard, no cards, no multi-panel layout, no dense explanatory diagrams. The cloud computer scene is an editorial metaphor, not literal documentary evidence. Make it sophisticated, striking and immediately readable at 180x240.\n\nDIRECTION A: BLACK / ORANGE, tangible cinematic tech poster. Near-black ink background with fine film texture, vivid terracotta/coral orange, warm ivory. The upper 48% is dominated by extremely bold condensed Chinese headline, split cleanly as 搬进 / 云电脑 into two lines. Set Claude Code as a strong smaller ivory line at top. The huge Chinese typography has subtle ink grain and crisp flat shape, not shiny neon extrusion. Lower center: a large physical glowing orange pixel creature stands on the keyboard of one open dark brushed-aluminum laptop; a single sculptural off-white cloud billows out of the laptop screen and wraps the creature like a new home in the cloud. Dynamic 3/4 low-angle perspective, warm orange side light, deep soft shadows, gentle atmospheric dust, premium product-render quality. Creature remains rectangular voxel-like with two black eyes, friendly not aggressive. Cloud, creature and laptop form one continuous composition, large and close. Place 我的使用实测 in a small ivory line with a thin orange rule near the bottom. No electric blue, no purple, no code panels. Big expressive headline and one giant object silhouette."
+    },
+    {
+      "step": "title_revision",
+      "prompt": "Edit this existing Chinese short-video cover. Preserve the original image's exact native 3:4 portrait canvas, overall composition, orange pixel creature identity, clouds, laptop, lighting, material, color palette and visual style. This is a title-only cover revision; make the smallest necessary layout adjustment for the new headline. Keep the same no-human illustration. Output one complete finished cover.\nReplace the big Chinese headline 搬进云电脑 with the exact text 防封号新思路. Use two lines: 防封号 on the first line and 新思路 on the second. The six Chinese characters must be exact, clearly distinguishable and each appear once. Keep extremely bold editorial display typography and the same title color as this input. Keep the English title Claude Code unchanged. Replace the smaller bottom text 我的使用实测 with 美国云电脑实测, preserving the original bottom-caption style. No other visible text. Remove all of the old Chinese headline and old subtitle. Maintain the main headline as the first read, readable at 180x240. Keep generous safe margins, no character cropped or obscured by the cloud/computer. Do not add any shield, guarantee, lock, ban warning, badge, icon, flag, list, logo or new decorative element. This wording presents a personal idea about avoiding account bans; do not claim a guarantee, official endorsement, or never getting banned. Preserve every other element unchanged.\n\nVariant: 黑橙版. Preserve this supplied variant exactly; no borrowing another style."
+    },
+    {
+      "step": "remove_bottom_caption",
+      "prompt": "Edit this exact existing 3:4 portrait video cover with ONE localized cleanup only: remove the entire bottom caption 美国云电脑实测 and the two short orange horizontal decorative lines flanking that caption. Seamlessly reconstruct the underlying dark tabletop and warm orange light/reflection texture so the bottom is clean image with no label, no caption, no decorative rules. Do not replace it with any text. Preserve the upper text Claude Code and 防封号新思路 exactly, and preserve the exact headline typography, layout, orange character, laptop, clouds, lighting, colors, textures, framing, size and aspect ratio. Do not reposition, resize or redesign anything else. Retain the full canvas. The only text remaining anywhere is Claude Code and 防封号新思路."
+    }
+  ]
+}
